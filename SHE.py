@@ -7,7 +7,6 @@ from strings_with_arrows import *
 import string
 import os
 import math
-import kaalka
 
 #######################################
 # CONSTANTS
