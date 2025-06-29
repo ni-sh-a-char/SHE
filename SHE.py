@@ -1878,10 +1878,14 @@ class BuiltInFunction(BaseFunction):
 
   def execute_kaalka_encrypt(self, exec_ctx):
         message = exec_ctx.symbol_table.get('message')
+        # timestamp is optional
         timestamp = exec_ctx.symbol_table.get('timestamp')
         if not hasattr(self, '_kaalka'):
             self._kaalka = Kaalka()
-        encrypted = self._kaalka.encrypt(str(message.value), str(timestamp.value))
+        if timestamp is not None and hasattr(timestamp, 'value') and str(timestamp.value).strip():
+            encrypted = self._kaalka.encrypt(str(message.value), str(timestamp.value))
+        else:
+            encrypted = self._kaalka.encrypt(str(message.value))
         return RTResult().success(String(encrypted))
   execute_kaalka_encrypt.arg_names = ['message', 'timestamp']
 
@@ -1890,7 +1894,10 @@ class BuiltInFunction(BaseFunction):
         timestamp = exec_ctx.symbol_table.get('timestamp')
         if not hasattr(self, '_kaalka'):
             self._kaalka = Kaalka()
-        decrypted = self._kaalka.decrypt(str(encrypted_message.value), str(timestamp.value))
+        if timestamp is not None and hasattr(timestamp, 'value') and str(timestamp.value).strip():
+            decrypted = self._kaalka.decrypt(str(encrypted_message.value), str(timestamp.value))
+        else:
+            decrypted = self._kaalka.decrypt(str(encrypted_message.value))
         return RTResult().success(String(decrypted))
   execute_kaalka_decrypt.arg_names = ['encrypted_message', 'timestamp']
 

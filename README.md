@@ -246,10 +246,14 @@ SHE supports encryption and decryption using the [Kaalka Encryption Algorithm](h
 
 - `KAALKA_ENCRYPT(message, timestamp)`
   - Encrypts the given message using the provided time (e.g., "14:35:22") as the key.
+  - **If the `timestamp` argument is omitted, the current system time is used automatically.**
 - `KAALKA_DECRYPT(encrypted_message, timestamp)`
   - Decrypts the given encrypted message using the provided time as the key.
+  - **If the `timestamp` argument is omitted, the current system time is used automatically.**
 
 #### Example Usage
+
+**Encrypt and decrypt with an explicit timestamp:**
 
 ```she
 VAR msg = "Hello, SHE!"
@@ -259,6 +263,20 @@ PRINT(encrypted)
 VAR decrypted = KAALKA_DECRYPT(encrypted, ts)
 PRINT(decrypted)
 ```
+
+**Encrypt and decrypt using the current system time (no timestamp argument):**
+
+```she
+VAR msg = "Secret at system time!"
+VAR encrypted = KAALKA_ENCRYPT(msg)
+PRINT(encrypted)
+VAR decrypted = KAALKA_DECRYPT(encrypted)
+PRINT(decrypted)
+```
+
+> **Note:**
+> - When using the system time, encryption and decryption must occur at the same second for the result to be correct.
+> - For most use cases, providing an explicit timestamp is recommended for reproducibility.
 
 ---
 
