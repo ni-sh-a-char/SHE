@@ -240,7 +240,7 @@ RUN("example.she")
 
 ## 🔒 Kaalka Encryption Integration
 
-SHE supports encryption and decryption using the Kaalka Encryption Algorithm as built-in functions.
+SHE supports encryption and decryption using the [Kaalka Encryption Algorithm](https://github.com/PIYUSH-MISHRA-00/Kaalka-Encryption-Algorithm) as built-in functions.
 
 ### Kaalka Encryption Functions
 
