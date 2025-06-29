@@ -9,8 +9,14 @@ SHE is a beginner-friendly programming language with a simple syntax for arithme
 ## 🚀 Getting Started
 
 1. **Install Python** (if not already installed).
-2. Open a terminal and navigate to the SHE directory.
-3. Run SHE with:
+2. **Install the Kaalka encryption package** (required for encryption features):
+
+    ```sh
+    pip install kaalka
+    ```
+
+3. Open a terminal and navigate to the SHE directory.
+4. Run SHE with:
 
     ```sh
     python3 shell.py
