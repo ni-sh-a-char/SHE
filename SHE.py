@@ -7,6 +7,7 @@ from strings_with_arrows import *
 import string
 import os
 import math
+from kaalka import Kaalka, KaalkaNTP
 
 #######################################
 # CONSTANTS
@@ -1644,7 +1645,7 @@ class BaseFunction(Value):
 
   def check_and_populate_args(self, arg_names, args, exec_ctx):
     res = RTResult()
-    res.register(self.check_args(arg_names, args))
+    res.register(self.check_args(arg_names, args, exec_ctx))
     if res.should_return(): return res
     self.populate_args(arg_names, args, exec_ctx)
     return res.success(None)
@@ -1875,20 +1876,27 @@ class BuiltInFunction(BaseFunction):
     return RTResult().success(Number.null)
   execute_run.arg_names = ["fn"]
 
-BuiltInFunction.print       = BuiltInFunction("print")
-BuiltInFunction.print_ret   = BuiltInFunction("print_ret")
-BuiltInFunction.input       = BuiltInFunction("input")
-BuiltInFunction.input_int   = BuiltInFunction("input_int")
-BuiltInFunction.clear       = BuiltInFunction("clear")
-BuiltInFunction.is_number   = BuiltInFunction("is_number")
-BuiltInFunction.is_string   = BuiltInFunction("is_string")
-BuiltInFunction.is_list     = BuiltInFunction("is_list")
-BuiltInFunction.is_function = BuiltInFunction("is_function")
-BuiltInFunction.append      = BuiltInFunction("append")
-BuiltInFunction.pop         = BuiltInFunction("pop")
-BuiltInFunction.extend      = BuiltInFunction("extend")
-BuiltInFunction.len			= BuiltInFunction("len")
-BuiltInFunction.run			= BuiltInFunction("run")
+  def execute_kaalka_encrypt(self, exec_ctx):
+        message = exec_ctx.symbol_table.get('message')
+        timestamp = exec_ctx.symbol_table.get('timestamp')
+        if not hasattr(self, '_kaalka'):
+            self._kaalka = Kaalka()
+        encrypted = self._kaalka.encrypt(str(message.value), str(timestamp.value))
+        return RTResult().success(String(encrypted))
+  execute_kaalka_encrypt.arg_names = ['message', 'timestamp']
+
+  def execute_kaalka_decrypt(self, exec_ctx):
+        encrypted_message = exec_ctx.symbol_table.get('encrypted_message')
+        timestamp = exec_ctx.symbol_table.get('timestamp')
+        if not hasattr(self, '_kaalka'):
+            self._kaalka = Kaalka()
+        decrypted = self._kaalka.decrypt(str(encrypted_message.value), str(timestamp.value))
+        return RTResult().success(String(decrypted))
+  execute_kaalka_decrypt.arg_names = ['encrypted_message', 'timestamp']
+
+# Register new built-in functions
+BuiltInFunction.kaalka_encrypt = BuiltInFunction("kaalka_encrypt")
+BuiltInFunction.kaalka_decrypt = BuiltInFunction("kaalka_decrypt")
 
 #######################################
 # CONTEXT
@@ -2202,6 +2210,8 @@ global_symbol_table.set("POP", BuiltInFunction.pop)
 global_symbol_table.set("EXTEND", BuiltInFunction.extend)
 global_symbol_table.set("LEN", BuiltInFunction.len)
 global_symbol_table.set("RUN", BuiltInFunction.run)
+global_symbol_table.set("KAALKA_ENCRYPT", BuiltInFunction.kaalka_encrypt)
+global_symbol_table.set("KAALKA_DECRYPT", BuiltInFunction.kaalka_decrypt)
 
 def run(fn, text):
   # Generate tokens

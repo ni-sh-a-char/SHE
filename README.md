@@ -2,182 +2,272 @@
 
 # SHE - A Programming Language
 
-SHE is a programming language that provides a simplified syntax for performing arithmetic operations, storing values in variables, conditional statements, looping, functions, strings, lists, and more.
+SHE is a beginner-friendly programming language with a simple syntax for arithmetic, variables, conditionals, loops, functions, strings, lists, and more. This manual provides clear examples for every feature.
 
-# Running the Program
+---
 
-To run the SHE program, follow the steps below:
+## 🚀 Getting Started
 
-1. Ensure that Python is installed on your computer.
-2. Navigate to the directory where you have all the files.
-3. Run the following command in the terminal:
+1. **Install Python** (if not already installed).
+2. Open a terminal and navigate to the SHE directory.
+3. Run SHE with:
 
+    ```sh
+    python3 shell.py
+    ```
+
+---
+
+## 🧮 Arithmetic Operations
+
+SHE supports all basic arithmetic operations and power:
+
+```she
+5 + 5        # 10
+5 - 2        # 3
+5 * 3        # 15
+5 / 2        # 2.5
+5 % 2        # 1
+2 ^ 3        # 8 (power)
+(1 + 2) * 3  # 9
 ```
-python3 shell.py
-```
 
-# Basics
+---
 
-SHE supports direct arithmetic operations such as addition, subtraction, multiplication, division, and modulus. It also supports raising a number to a power.
+## 📦 Variables
 
-# Storing Values in Variables
+Store values using the `VAR` keyword:
 
-You can store values in variables using the `VAR` keyword.
-
-# Comparison
-
-SHE supports comparison operations to evaluate expressions and return boolean values.
-
-# Conditional Statements
-
-You can use conditional statements (`IF`, `ELIF`, `ELSE`) to control the flow of your program based on certain conditions.
-
-# Looping
-
-SHE provides looping constructs like `FOR` and `WHILE` to repeat a block of code.
-
-# Functions
-
-You can define and call functions in SHE to perform specific tasks. Functions can also be assigned to variables.
-
-# Strings
-
-SHE supports working with strings, including concatenation and repetition.
-
-# Lists
-
-SHE allows you to work with lists, perform operations like concatenation and indexing, and use built-in functions for manipulating lists.
-
-# Inbuilt Functions
-
-SHE provides various inbuilt functions for mathematical operations, printing, input, clearing the screen, and type checking.
-
-# Multiline Statements
-
-SHE supports multiline statements, allowing you to execute multiple statements on the same line.
-
-# Break and Continue
-
-SHE supports `BREAK` and `CONTINUE` statements for controlling loop execution.
-
-# Running Files
-
-You can run SHE files using the `RUN` function.
-
-# Basics
-
-## Direct arithmatic operation like:
-
-5+5
-
-5/5
-
-5%5
-
-5-5
-
-5*5
-
-(1+2)*3
-
-Power :- 5 ^ 2 = 25 ("^" denotes raised to) 
-
-## Storing value in Variables :- 
-
+```she
 VAR a = 5
+VAR b = 10
+VAR sum = a + b
+PRINT(sum)  # 15
+```
 
-## Comparison
+---
 
-5 == 5 gives 1 (1 is True and 0 is False)
+## 🔎 Comparison Operations
 
-5 == 5 AND 5 == 4 gives 0
+Evaluate expressions and get boolean results (1 for True, 0 for False):
 
-5 == 5 OR  5 == 4 gives 1
+```she
+PRINT(5 == 5)         # 1
+PRINT(5 != 4)         # 1
+PRINT(5 > 3)          # 1
+PRINT(5 < 3)          # 0
+PRINT(5 >= 5)         # 1
+PRINT(5 <= 4)         # 0
+PRINT(5 == 5 AND 5 == 4)  # 0
+PRINT(5 == 5 OR 5 == 4)   # 1
+```
 
-## Conditional
+---
 
+## 🧭 Conditional Statements
+
+Control flow with `IF`, `ELIF`, `ELSE`:
+
+```she
 VAR age = 19
 VAR price = IF age >= 18 THEN 40 ELSE 20
+PRINT(price)  # 40
 
-## Looping :- FOR, WHILE (STEP carries iteration)
+VAR x = 5
+VAR result = IF x > 10 THEN "big" ELIF x == 5 THEN "five" ELSE "small"
+PRINT(result)  # five
+```
 
-SHE > FOR i = 1 TO 6 THEN VAR result = result * 1
-SHE > result
-120
+---
 
-SHE > FOR i = 5 TO 0 STEP -1 THEN VAR result = result * i 
-SHE > result
-120
+## 🔁 Loops
 
-SHE > WHILE i < 100 THEN VAR i = i + 1
+### FOR Loop
 
-## Functions
+```she
+VAR result = 1
+FOR i = 1 TO 5 THEN VAR result = result * i
+PRINT(result)  # 120 (factorial of 5)
+```
 
-SHE > FUN add (a, b) -> a + b
-SHE > add(6, 6)
-12
+With step:
 
-We can reassign function to another variable
+```she
+FOR i = 10 TO 0 STEP -2 THEN PRINT(i)
+# 10 8 6 4 2 0
+```
 
-SHE > VAR any = add
-SHE > any
-SHE > any(5, 4)
+### WHILE Loop
 
-SHE > FUN (a) -> a+6
-SHE > VAR any = FUN (a) -> a+6
-SHE > any(12)
-18
+```she
+VAR i = 0
+WHILE i < 5 THEN
+    PRINT(i)
+    VAR i = i + 1
+END
+# 0 1 2 3 4
+```
 
-## Strings
+---
 
-SHE > "This is a String"
-SHE > "This is " + "a String"
-SHE > "Hello " * 3
-SHE > FUN greet(person, empathization) -> "Hello, " * empathization + person
-SHE > greet("Piyush", 3)
+## 🧩 Functions
 
-## List
+Define and use functions:
 
-SHE > []
-SHE > [1, 2, 3, 4]
-SHE > [1, 2, 3] + 4 (adding element to list)
-SHE > [1, 2, 3] * [3, 4, 5] (concatenate list)
-SHE > [1, 2, 3] / 0 (look for element at 0 position)
-SHE > FOR i = 1 to 9 THEN 2 ^ i
+```she
+FUN add(a, b) -> a + b
+PRINT(add(6, 6))  # 12
 
-## Inbuilt functions
+VAR any = add
+PRINT(any(5, 4))  # 9
 
-SHE > MATH_PI
-SHE > PRINT("Hello, World!")
-SHE > VAR name = INPUT() (then you can anything in next line)
-SHE > VAR any = INPUT_INT() (then you can give integer input)
-CLEAR() and CLS() can be used to clear screen
-IS_NUM("value"), IS_STRING("value"), IS_FUN("value"), IS_LIST("value") can be used to to check number, string, function and list respectively.
+VAR inc = FUN(a) -> a + 6
+PRINT(inc(12))    # 18
+```
 
-SHE > VAR list = [1, 2, 3]
-SHE > APPEND(list, 4)
-SHE > list 
-(will give [1, 2, 3, 4])
-SHE > POP(list, 3)
-4
-SHE > list
-[1, 2, 3]
-SHE > EXTEND(list, [4, 5, 6])
-SHE > list
-[1, 2, 3, 4, 5, 6]
+---
 
-## Multiline statements
+## 📝 Strings
 
+Work with strings:
+
+```she
+PRINT("This is a String")
+PRINT("Hello " + "World")  # Hello World
+PRINT("Hi! " * 3)           # Hi! Hi! Hi! 
+
+FUN greet(person, times) -> "Hello, " * times + person
+PRINT(greet("Piyush", 3))  # Hello, Hello, Hello, Piyush
+```
+
+---
+
+## 📚 Lists
+
+Create and manipulate lists:
+
+```she
+VAR list = [1, 2, 3]
+PRINT(list)
+VAR list2 = list + 4
+PRINT(list2)  # [1, 2, 3, 4]
+VAR concat = [1, 2, 3] * [4, 5]
+PRINT(concat) # [1, 2, 3, 4, 5]
+PRINT(list / 0)  # 1 (element at index 0)
+```
+
+Loop with lists:
+
+```she
+FOR i = 1 TO 5 THEN PRINT(i ^ 2)
+# 1 4 9 16 25
+```
+
+---
+
+## 🛠️ Built-in Functions
+
+- `PRINT(value)` — Print a value
+- `PRINT_RET(value)` — Return value as string
+- `INPUT()` — Get user input
+- `INPUT_INT()` — Get integer input
+- `CLEAR()` or `CLS()` — Clear the screen
+- `IS_NUM(value)` — Check if value is a number
+- `IS_STRING(value)` — Check if value is a string
+- `IS_FUN(value)` — Check if value is a function
+- `IS_LIST(value)` — Check if value is a list
+- `APPEND(list, value)` — Add value to list
+- `POP(list, index)` — Remove and return value at index
+- `EXTEND(list, other_list)` — Extend list
+- `LEN(list)` — Length of list
+- `RUN(filename)` — Run a SHE file
+- `KAALKA_ENCRYPT(message, timestamp)` — Encrypt message
+- `KAALKA_DECRYPT(encrypted_message, timestamp)` — Decrypt message
+
+### Examples
+
+```she
+VAR list = [1, 2, 3]
+APPEND(list, 4)
+PRINT(list)  # [1, 2, 3, 4]
+PRINT(POP(list, 2))  # 3
+EXTEND(list, [5, 6])
+PRINT(list)  # [1, 2, 4, 5, 6]
+PRINT(LEN(list))  # 5
+```
+
+---
+
+## 🖊️ Multiline Statements
+
+You can chain statements on a single line using `;`:
+
+```she
 VAR result = IF 5 == 5 THEN; PRINT("math"); PRINT("works") ELSE PRINT("broken")
+```
 
-## Break and Continue
+---
 
-FOR i = 0 TO 10 THEN; IF i = 4 THEN CONTINUE ELIF i = 0 THEN BREAK; VAR a = a + i; END
+## ⏹️ Break and Continue
 
-## Running files
+Control loop execution:
 
-SHE > RUN("file_name".myopl)
+```she
+FOR i = 0 TO 10 THEN
+    IF i == 4 THEN CONTINUE
+    ELIF i == 0 THEN BREAK
+    VAR a = a + i
+END
+```
 
-# Contributing
+---
 
-Contributions to the SHE programming language are welcome! If you have any suggestions, bug reports, or feature requests, please create an issue or submit a pull request.
+## 📂 Running SHE Files
+
+Save your SHE code in a file (e.g., `example.she`) and run:
+
+```she
+RUN("example.she")
+```
+
+---
+
+## 🔒 Kaalka Encryption Integration
+
+SHE supports encryption and decryption using the Kaalka Encryption Algorithm as built-in functions.
+
+### Kaalka Encryption Functions
+
+- `KAALKA_ENCRYPT(message, timestamp)`
+  - Encrypts the given message using the provided time (e.g., "14:35:22") as the key.
+- `KAALKA_DECRYPT(encrypted_message, timestamp)`
+  - Decrypts the given encrypted message using the provided time as the key.
+
+#### Example Usage
+
+```she
+VAR msg = "Hello, SHE!"
+VAR ts = "14:35:22"  # Use a time string (HH:MM:SS) as key
+VAR encrypted = KAALKA_ENCRYPT(msg, ts)
+PRINT(encrypted)
+VAR decrypted = KAALKA_DECRYPT(encrypted, ts)
+PRINT(decrypted)
+```
+
+---
+
+## 🔐 Security and Encryption
+
+With Kaalka, SHE can be used for secure message handling and cryptographic experiments. Always use the correct time key for encryption and decryption.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! If you have suggestions, bug reports, or feature requests, please create an issue or submit a pull request.
+
+---
+
+## 📄 License
+
+See the LICENSE file for details.
