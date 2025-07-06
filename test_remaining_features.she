@@ -1,0 +1,29 @@
+# Test strings and string operations
+PRINT("Hello " + "World")
+PRINT("Hi! " * 3)
+
+FUN greet(person, times) -> "Hello, " * times + person
+PRINT(greet("Piyush", 3))
+
+# Test lists and list operations
+VAR list = [1, 2, 3]
+APPEND(list, 4)
+PRINT(list)
+PRINT(POP(list, 2))
+EXTEND(list, [5, 6])
+PRINT(list)
+PRINT(LEN(list))
+
+# Test built-in functions
+PRINT(IS_NUM(5))
+PRINT(IS_STR("test"))
+PRINT(IS_LIST(list))
+PRINT(IS_FUN(greet))
+
+# Test encryption features
+VAR msg = "Hello, SHE!"
+VAR ts = "14:35:22"
+VAR encrypted = KAALKA_ENCRYPT(msg, ts)
+PRINT(encrypted)
+VAR decrypted = KAALKA_DECRYPT(encrypted, ts)
+PRINT(decrypted)

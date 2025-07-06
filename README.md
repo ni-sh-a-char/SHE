@@ -19,7 +19,7 @@ SHE is a beginner-friendly programming language with a simple syntax for arithme
 4. Run SHE with:
 
     ```sh
-    python3 shell.py
+    python shell.py
     ```
 
 ---
@@ -173,7 +173,7 @@ FOR i = 1 TO 5 THEN PRINT(i ^ 2)
 
 ## 🛠️ Built-in Functions
 
-- `PRINT(value)` — Print a value
+- `PRINT(value)` — Print a value (prints the value directly, no extra zero or newline)
 - `PRINT_RET(value)` — Return value as string
 - `INPUT()` — Get user input
 - `INPUT_INT()` — Get integer input
@@ -186,45 +186,15 @@ FOR i = 1 TO 5 THEN PRINT(i ^ 2)
 - `POP(list, index)` — Remove and return value at index
 - `EXTEND(list, other_list)` — Extend list
 - `LEN(list)` — Length of list
-- `RUN(filename)` — Run a SHE file
+- `RUN(filename)` — Run a SHE file (output of PRINT statements in the file will be shown)
 - `KAALKA_ENCRYPT(message, timestamp)` — Encrypt message
 - `KAALKA_DECRYPT(encrypted_message, timestamp)` — Decrypt message
 
-### Examples
+### Notes on Output Behavior
 
-```she
-VAR list = [1, 2, 3]
-APPEND(list, 4)
-PRINT(list)  # [1, 2, 3, 4]
-PRINT(POP(list, 2))  # 3
-EXTEND(list, [5, 6])
-PRINT(list)  # [1, 2, 4, 5, 6]
-PRINT(LEN(list))  # 5
-```
-
----
-
-## 🖊️ Multiline Statements
-
-You can chain statements on a single line using `;`:
-
-```she
-VAR result = IF 5 == 5 THEN; PRINT("math"); PRINT("works") ELSE PRINT("broken")
-```
-
----
-
-## ⏹️ Break and Continue
-
-Control loop execution:
-
-```she
-FOR i = 0 TO 10 THEN
-    IF i == 4 THEN CONTINUE
-    ELIF i == 0 THEN BREAK
-    VAR a = a + i
-END
-```
+- The SHE shell suppresses printing the return value of the `RUN` and `PRINT` commands to avoid extra zeros or duplicate output.
+- The output you see from `PRINT` commands is the actual value printed by the script.
+- There is no extra zero printed by the interpreter or shell beyond what the script outputs.
 
 ---
 
@@ -280,12 +250,6 @@ PRINT(decrypted)
 
 ---
 
-## 🔐 Security and Encryption
-
-With Kaalka, SHE can be used for secure message handling and cryptographic experiments. Always use the correct time key for encryption and decryption.
-
----
-
 ## 🤝 Contributing
 
 Contributions are welcome! If you have suggestions, bug reports, or feature requests, please create an issue or submit a pull request.
@@ -295,3 +259,29 @@ Contributions are welcome! If you have suggestions, bug reports, or feature requ
 ## 📄 License
 
 See the LICENSE file for details.
+
+---
+
+## 🧪 Test Files
+
+Two test files are included for thorough testing of SHE language features:
+
+- `test_multiline.she`: Tests multiline statements, loops, functions, and basic operations.
+- `test_remaining_features.she`: Tests built-in functions, encryption, lists, and edge cases.
+
+Run these test files using:
+
+```she
+RUN("test_multiline.she")
+RUN("test_remaining_features.she")
+```
+
+These tests demonstrate the language capabilities and verify correct behavior.
+
+---
+
+## 📝 Notes
+
+- The SHE shell suppresses printing the return value of `RUN` and `PRINT` commands to avoid extra zeros.
+- The output you see from `PRINT` commands is the actual output of the script.
+- If you want to avoid output, remove or comment out `PRINT` statements in your SHE scripts.

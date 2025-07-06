@@ -7,7 +7,7 @@ from strings_with_arrows import *
 import string
 import os
 import math
-from kaalka import Kaalka, KaalkaNTP
+from kaalka.kaalka import Kaalka
 
 #######################################
 # CONSTANTS
@@ -1645,7 +1645,7 @@ class BaseFunction(Value):
 
   def check_and_populate_args(self, arg_names, args, exec_ctx):
     res = RTResult()
-    res.register(self.check_args(arg_names, args, exec_ctx))
+    res.register(self.check_args(arg_names, args))
     if res.should_return(): return res
     self.populate_args(arg_names, args, exec_ctx)
     return res.success(None)
@@ -1714,7 +1714,7 @@ class BuiltInFunction(BaseFunction):
 
   def execute_print(self, exec_ctx):
     print(str(exec_ctx.symbol_table.get('value')))
-    return RTResult().success(Number.null)
+    return RTResult().success(None)
   execute_print.arg_names = ['value']
   
   def execute_print_ret(self, exec_ctx):
@@ -2173,6 +2173,8 @@ class Interpreter:
 
     return_value = res.register(value_to_call.execute(args))
     if res.should_return(): return res
+    if return_value is None:
+      return res.success(None)
     return_value = return_value.copy().set_pos(node.pos_start, node.pos_end).set_context(context)
     return res.success(return_value)
 
@@ -2202,23 +2204,23 @@ global_symbol_table.set("NULL", Number.null)
 global_symbol_table.set("FALSE", Number.false)
 global_symbol_table.set("TRUE", Number.true)
 global_symbol_table.set("MATH_PI", Number.math_PI)
-global_symbol_table.set("PRINT", BuiltInFunction.print)
-global_symbol_table.set("PRINT_RET", BuiltInFunction.print_ret)
-global_symbol_table.set("INPUT", BuiltInFunction.input)
-global_symbol_table.set("INPUT_INT", BuiltInFunction.input_int)
-global_symbol_table.set("CLEAR", BuiltInFunction.clear)
-global_symbol_table.set("CLS", BuiltInFunction.clear)
-global_symbol_table.set("IS_NUM", BuiltInFunction.is_number)
-global_symbol_table.set("IS_STR", BuiltInFunction.is_string)
-global_symbol_table.set("IS_LIST", BuiltInFunction.is_list)
-global_symbol_table.set("IS_FUN", BuiltInFunction.is_function)
-global_symbol_table.set("APPEND", BuiltInFunction.append)
-global_symbol_table.set("POP", BuiltInFunction.pop)
-global_symbol_table.set("EXTEND", BuiltInFunction.extend)
-global_symbol_table.set("LEN", BuiltInFunction.len)
-global_symbol_table.set("RUN", BuiltInFunction.run)
-global_symbol_table.set("KAALKA_ENCRYPT", BuiltInFunction.kaalka_encrypt)
-global_symbol_table.set("KAALKA_DECRYPT", BuiltInFunction.kaalka_decrypt)
+global_symbol_table.set("PRINT", BuiltInFunction("print"))
+global_symbol_table.set("PRINT_RET", BuiltInFunction("print_ret"))
+global_symbol_table.set("INPUT", BuiltInFunction("input"))
+global_symbol_table.set("INPUT_INT", BuiltInFunction("input_int"))
+global_symbol_table.set("CLEAR", BuiltInFunction("clear"))
+global_symbol_table.set("CLS", BuiltInFunction("clear"))
+global_symbol_table.set("IS_NUM", BuiltInFunction("is_number"))
+global_symbol_table.set("IS_STR", BuiltInFunction("is_string"))
+global_symbol_table.set("IS_LIST", BuiltInFunction("is_list"))
+global_symbol_table.set("IS_FUN", BuiltInFunction("is_function"))
+global_symbol_table.set("APPEND", BuiltInFunction("append"))
+global_symbol_table.set("POP", BuiltInFunction("pop"))
+global_symbol_table.set("EXTEND", BuiltInFunction("extend"))
+global_symbol_table.set("LEN", BuiltInFunction("len"))
+global_symbol_table.set("RUN", BuiltInFunction("run"))
+global_symbol_table.set("KAALKA_ENCRYPT", BuiltInFunction("kaalka_encrypt"))
+global_symbol_table.set("KAALKA_DECRYPT", BuiltInFunction("kaalka_decrypt"))
 
 def run(fn, text):
   # Generate tokens
@@ -2237,4 +2239,5 @@ def run(fn, text):
   context.symbol_table = global_symbol_table
   result = interpreter.visit(ast.node, context)
 
-  return result.value, result.error
+  # Always return None to suppress printing extra zero after script execution
+  return None, result.error

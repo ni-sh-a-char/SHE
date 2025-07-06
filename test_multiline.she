@@ -1,0 +1,18 @@
+VAR result = 1
+FOR i = 1 TO 5 THEN VAR result = result * i
+PRINT(result)
+
+VAR i = 0
+WHILE i < 5 THEN
+    PRINT(i)
+    VAR i = i + 1
+END
+
+FUN add(a, b) -> a + b
+PRINT(add(6, 6))
+
+VAR any = add
+PRINT(any(5, 4))
+
+VAR inc = FUN(a) -> a + 6
+PRINT(inc(12))
