@@ -1,235 +1,198 @@
-# SHE – A Programming Language  
+# SHE – “A Programming Language”
 
-**Repository:** `github.com/your-org/SHE`  
-**Current Version:** `v2.3.1` (2025‑09‑24)  
-**License:** MIT  
-
-> **SHE** (pronounced “shē”) is a modern, statically‑typed, compiled programming language designed for simplicity, safety, and high‑performance systems programming. It ships with a fast native compiler, an interactive REPL, and a rich standard library.
-
----  
-
-## Table of Contents  
-
-1. [Installation](#installation)  
-   - Binary releases  
-   - Building from source  
-   - Docker & VS Code extension  
-2. [Quick‑Start Usage](#quick-start-usage)  
-   - REPL  
-   - Compiling & running programs  
-   - Project layout & `shec` commands  
-3. [API Documentation](#api-documentation)  
-   - Language fundamentals  
-   - Standard library overview  
-   - Compiler & tooling API  
-4. [Examples](#examples)  
-   - Hello World  
-   - Data structures & generics  
-   - File I/O  
-   - Concurrency (actors)  
-   - Embedding SHE in a host application  
-5. [Contributing & Development](#contributing)  
-6. [License & Acknowledgements](#license)  
-
----  
-
-## Installation  
-
-### 1. Binary releases (recommended)
-
-| OS / Architecture | Download | SHA‑256 |
-|-------------------|----------|---------|
-| Linux x86_64      | `she-v2.3.1-linux-x86_64.tar.gz` | `c1e2…` |
-| macOS arm64       | `she-v2.3.1-macos-arm64.tar.gz` | `a9f3…` |
-| Windows x86_64    | `she-v2.3.1-windows-x86_64.zip` | `d4b7…` |
-
-```bash
-# Example for Linux
-curl -L -O https://github.com/your-org/SHE/releases/download/v2.3.1/she-v2.3.1-linux-x86_64.tar.gz
-tar -xzf she-v2.3.1-linux-x86_64.tar.gz
-sudo mv she /usr/local/bin/
-```
-
-The archive contains three executables:
-
-| Executable | Purpose |
-|------------|---------|
-| `shec`     | The native compiler (`shec <source>.she -o <binary>`). |
-| `she-repl` | Interactive REPL (`she-repl`). |
-| `she-doc`  | Generates API docs from source (`she-doc ./src`). |
-
-All binaries are **statically linked** and have **zero‑runtime dependencies**.
+> **SHE** (Simple, Human‑oriented, Extensible) is a modern, statically‑typed, multi‑paradigm programming language designed for readability, safety, and rapid development.  
+> This document provides the latest information on installing, using, and extending SHE, together with a concise API reference and runnable examples.
 
 ---
 
-### 2. Building from source  
+## Table of Contents
+1. [Installation](#installation)  
+   1.1. [Pre‑built Binaries](#pre-built-binaries)  
+   1.2. [Package Managers](#package-managers)  
+   1.3. [Building from Source](#building-from-source)  
+   1.4. [Docker & VS Code Extension](#docker--vscode-extension)  
+2. [Usage](#usage)  
+   2.1. [Command‑Line Interface (CLI)](#cli)  
+   2.2. [REPL (Read‑Eval‑Print Loop)](#repl)  
+   2.3. [Project Layout & Build System](#project-layout)  
+   2.4. [Common Flags & Environment Variables](#flags)  
+3. [API Documentation](#api-documentation)  
+   3.1. [Core Language Constructs](#core-constructs)  
+   3.2. [Standard Library Overview](#stdlib)  
+   3.3. [Compiler & Runtime APIs](#compiler-runtime)  
+   3.4. [Embedding SHE in Other Applications](#embedding)  
+4. [Examples](#examples)  
+   4.1. [Hello, World!](#hello-world)  
+   4.2. [Basic Types & Control Flow](#basic-types)  
+   4.3. [Functions & Generics](#functions-generics)  
+   4.4. [Modules & Packages](#modules)  
+   4.5. [Concurrency with `async`/`await`](#concurrency)  
+   4.6. [Interoperability with C / Rust](#interop)  
+5. [Contributing & Development Workflow](#contributing)  
+6. [License](#license)  
+
+---
+
+<a name="installation"></a>
+## 1. Installation
+
+SHE can be installed on Windows, macOS, and Linux. Choose the method that best fits your workflow.
+
+### 1.1. Pre‑built Binaries
+| OS | Architecture | Download |
+|----|--------------|----------|
+| Windows 10+ | x86_64 | `https://github.com/yourorg/SHE/releases/latest/download/she-windows-x86_64.zip` |
+| macOS 12+ | arm64 (Apple Silicon) | `https://github.com/yourorg/SHE/releases/latest/download/she-macos-arm64.tar.gz` |
+| macOS 12+ | x86_64 | `https://github.com/yourorg/SHE/releases/latest/download/she-macos-x86_64.tar.gz` |
+| Linux | x86_64 | `https://github.com/yourorg/SHE/releases/latest/download/she-linux-x86_64.tar.gz` |
+| Linux | aarch64 | `https://github.com/yourorg/SHE/releases/latest/download/she-linux-aarch64.tar.gz` |
+
+**Installation steps (Linux/macOS):**
+```bash
+# Example for Linux x86_64
+curl -L -o she.tar.gz \
+  https://github.com/yourorg/SHE/releases/latest/download/she-linux-x86_64.tar.gz
+tar -xzf she.tar.gz -C $HOME/.local/bin
+chmod +x $HOME/.local/bin/she
+# Add to PATH if not already there
+echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**Installation steps (Windows):**
+1. Download the `.zip` file.
+2. Extract to a folder, e.g., `C:\Program Files\SHE`.
+3. Add that folder to **System → Environment Variables → Path**.
+4. Open a new PowerShell window and run `she --version`.
+
+### 1.2. Package Managers
+
+| Manager | Command |
+|---------|---------|
+| **Homebrew (macOS/Linux)** | `brew install she-lang` |
+| **Scoop (Windows)** | `scoop bucket add she https://github.com/yourorg/scoop-she && scoop install she` |
+| **Cargo (Rust ecosystem)** | `cargo install she-cli` |
+| **NPM (Node ecosystem)** | `npm i -g she-lang` |
+| **Conda** | `conda install -c conda-forge she` |
+
+> **Tip:** All package managers automatically keep SHE up‑to‑date. Use the manager’s upgrade command (`brew upgrade she`, `scoop update she`, etc.) to get the latest release.
+
+### 1.3. Building from Source
 
 > **Prerequisites**  
-> - **Rust** ≥ 1.73 (the compiler is written in Rust)  
-> - **CMake** ≥ 3.20 (for the optional C‑interop layer)  
-> - **Git**  
+> - **Rust** (≥ 1.70) – `curl https://sh.rustup.rs -sSf | sh`  
+> - **CMake** (≥ 3.20) – required for the native runtime.  
+> - **Git** – to clone the repository.
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-org/SHE.git
+# Clone the repo
+git clone https://github.com/yourorg/SHE.git
 cd SHE
 
-# Build the compiler, REPL and docs generator
+# Build the compiler, standard library, and CLI
 cargo build --release
 
-# Install to $HOME/.local/bin (or any directory on $PATH)
-cargo install --path . --root $HOME/.local
+# Install the binary to ~/.local/bin (or %USERPROFILE%\bin on Windows)
+cargo install --path . --locked
 ```
 
-**Optional:** Build the C‑interop library (`libshe.so` / `she.dll`) for embedding:
+**Optional components**
+- `she-docs` – generates HTML API docs (`cargo install she-docs`).
+- `she-lsp` – Language Server Protocol server for IDE integration (`cargo install she-lsp`).
 
+### 1.4. Docker & VS Code Extension
+
+**Docker image** (official, multi‑arch):
 ```bash
-cd interop/c
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make
+docker pull ghcr.io/yourorg/she:latest
+docker run --rm -v "$(pwd)":/workspace -w /workspace ghcr.io/yourorg/she:latest she run main.she
 ```
+
+**VS Code**: Install the **SHE Language Support** extension from the Marketplace. It bundles the LSP server, syntax highlighting, and a built‑in debugger.
 
 ---
 
-### 3. Docker image  
+<a name="usage"></a>
+## 2. Usage
 
-```bash
-docker pull your-org/she:2.3.1
-docker run --rm -v "$(pwd)":/src -w /src your-org/she:2.3.1 shec main.she -o main
+SHE ships a single binary (`she`) that doubles as a compiler, interpreter, and package manager.
+
+### 2.1. Command‑Line Interface (CLI)
+
+```text
+she <command> [options] [args]
+
+Commands:
+  run <file>            Execute a SHE script (interpreted mode)
+  build <dir>           Compile a project to a native binary
+  test [<dir>]          Run unit tests
+  fmt [<path>]          Format source files (uses shefmt)
+  fmt-check [<path>]    Verify formatting without changing files
+  doc [<path>]          Generate API documentation (HTML)
+  repl                  Start an interactive REPL session
+  new <project-name>    Scaffold a new SHE project
+  add <crate>           Add a dependency to the manifest (she.toml)
+  publish               Publish a package to the SHE registry
+  version               Print version information
+  help                  Show this help message
 ```
 
-The image contains `shec`, `she-repl`, and the full standard library.
+**Typical workflow**
+```bash
+# Create a new project
+she new my_app
+cd my_app
 
----
+# Write code in src/main.she ...
 
-### 4. VS Code extension  
+# Run it instantly (interpreted)
+she run src/main.she
 
-Install **SHE Language Support** from the VS Code Marketplace. It provides:
+# Or compile to a native binary
+she build .
+./target/release/my_app
+```
 
-- Syntax highlighting & IntelliSense  
-- On‑the‑fly compilation diagnostics  
-- Debugger integration (via `sheldbg`)  
-
----  
-
-## Quick‑Start Usage  
-
-### REPL  
+### 2.2. REPL (Read‑Eval‑Print Loop)
 
 ```bash
-$ she-repl
->>> let x: i32 = 42;
+$ she repl
+SHE 0.9.3 (REPL) ── type :help for help
+>>> let x = 42
 >>> x * 2
 84
 >>> :exit
 ```
 
-Special REPL commands:
+**REPL shortcuts**
 
-| Command | Description |
-|---------|-------------|
-| `:help` | Show REPL help |
-| `:load <file>` | Load a script into the session |
-| `:type <expr>` | Show inferred type |
-| `:exit` | Quit REPL |
+| Shortcut | Action |
+|----------|--------|
+| `:help`  | Show REPL commands |
+| `:reset` | Clear all definitions |
+| `:load <file>` | Load a script into the current session |
+| `:type <expr>` | Show the inferred type of an expression |
+| `Ctrl‑D` | Exit REPL |
 
----
+### 2.3. Project Layout & Build System
 
-### Compiling & Running a Program  
-
-```bash
-# 1. Write a source file (example: hello.she)
-cat > hello.she <<'EOF'
-pub fn main() -> i32 {
-    println("Hello, SHE!");
-    0
-}
-EOF
-
-# 2. Compile
-shec hello.she -o hello
-
-# 3. Run
-./hello
-# → Hello, SHE!
-```
-
-**Common flags**
-
-| Flag | Meaning |
-|------|---------|
-| `-O` | Optimize (default: `-O2`). |
-| `-g` | Emit debug info for `sheldbg`. |
-| `--target <triple>` | Cross‑compile (e.g., `x86_64-pc-windows-gnu`). |
-| `--emit <asm|llvm|obj>` | Emit intermediate representation. |
-| `--no-stdlib` | Build a freestanding binary. |
-
----
-
-### Project Layout  
+A **SHE project** follows the conventional layout:
 
 ```
-my_project/
+my_app/
+├─ she.toml          # Manifest (name, version, dependencies)
 ├─ src/
-│   ├─ main.she          # entry point (must contain `pub fn main()`)
-│   └─ lib/
-│       └─ utils.she
+│   ├─ main.she      # Entry point (optional)
+│   └─ lib.she       # Library code
 ├─ tests/
-│   └─ utils_test.she
-├─ Cargo.she.toml        # SHE’s package manifest (similar to Cargo.toml)
-└─ sheconfig.toml        # optional compiler configuration
+│   └─ lib_test.she # Unit tests
+└─ examples/
+    └─ hello.she    # Example programs
 ```
 
-**`Cargo.she.toml` example**
+**`she.toml` example**
 
 ```toml
 [package]
-name = "my_project"
-version = "0.1.0"
-edition = "2025"
-
-[dependencies]
-std = "2.3"
-serde = { version = "1.0", optional = true }
-
-[features]
-default = ["serde"]
-```
-
-Build the whole project:
-
-```bash
-shec build          # equivalent to `cargo build`
-shec test           # runs all `*_test.she` files
-shec run            # builds and executes `src/main.she`
-```
-
----  
-
-## API Documentation  
-
-The API docs are generated with `she-doc` and published at https://your-org.github.io/SHE/. Below is a concise overview.
-
-### 1. Language Fundamentals  
-
-| Construct | Syntax | Description |
-|-----------|--------|-------------|
-| **Primitive Types** | `i8, i16, i32, i64, u8, u16, u32, u64, f32, f64, bool, char, str` | Fixed‑size integers, floating‑point, boolean, Unicode scalar, UTF‑8 string. |
-| **Compound Types** | `Array<T, N>`, `Slice<T>`, `Tuple<T1, T2, …>`, `Struct`, `Enum` | Statically sized arrays, dynamically sized slices, tuples, user‑defined structs/enums. |
-| **Generics** | `fn foo<T: Copy>(x: T) -> T { x }` | Parametric polymorphism with trait bounds. |
-| **Traits** | `trait Display { fn fmt(&self) -> str; }` | Interface‑like abstraction; can be auto‑implemented via `impl`. |
-| **Pattern Matching** | `match expr { pattern => expr, … }` | Exhaustive, compile‑time checked. |
-| **Error Handling** | `Result<T, E>` and `?` operator | Propagate errors without exceptions. |
-| **Concurrency** | `actor`, `async fn`, `await` | Lightweight actors + async/await built on a work‑stealing scheduler. |
-| **Unsafe Block** | `unsafe { … }` | Allows raw pointer manipulation, FFI, and other low‑level ops. |
-
-### 2. Standard Library Overview  
-
-| Module | Highlights |
-|--------|------------|
-| `std::io` | `File`, `BufReader`, `BufWriter`, `stdin`, `stdout`. |
-| `std::fs` | `read_to_string`, `write`, `metadata`, `create_dir_all`. |
-| `std::collections` | `HashMap<K, V>`, `HashSet<T>`, `Vec<T>`, `Deque<T>`. |
-| `std::fmt` | `println!`, `format!`, `Display`/`Debug` traits. |
-| `std::net` |
+name = "my_app"
+version = "0.1.0
