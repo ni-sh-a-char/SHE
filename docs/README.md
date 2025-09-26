@@ -1,313 +1,216 @@
 # SHE – “A Programming Language”
 
-> **SHE** (Simple, Human‑friendly, Extensible) is a lightweight, interpreted programming language designed for rapid prototyping, scripting, and teaching.  
-> It ships with a REPL, a standard library, and a clean, extensible API that lets you embed the interpreter in your own applications.
+> **SHE** (Simple, Human‑oriented, Extensible) is a modern, statically‑typed, multi‑paradigm programming language designed for readability, safety, and rapid prototyping. It ships with a powerful standard library, a fast native compiler, and an interactive REPL.
 
----  
+---
 
 ## Table of Contents
 1. [Installation](#installation)  
-2. [Quick Start / Usage](#quick-start--usage)  
-3. [Command‑Line Interface (CLI)](#command-line-interface-cli)  
-4. [Embedding SHE in Your Projects (API)](#embedding-she-in-your-projects-api)  
-5. [Standard Library Overview](#standard-library-overview)  
-6. [Examples](#examples)  
-7. [Contributing & Development](#contributing--development)  
-8. [License](#license)  
+2. [Quick‑Start / Usage](#usage)  
+3. [API Documentation](#api-documentation)  
+4. [Examples](#examples)  
+5. [Contributing & Development](#contributing)  
+6. [License](#license)  
 
 ---  
 
-## Installation
+## Installation <a name="installation"></a>
 
 ### Prerequisites
-| Tool | Minimum version |
-|------|-----------------|
-| **Python** | 3.9 (used for the build tools) |
-| **C compiler** | GCC ≥ 7 or Clang ≥ 6 (required only for optional native extensions) |
-| **Git** | any recent version (for cloning) |
+| Tool | Minimum Version | Why |
+|------|----------------|-----|
+| **Git** | 2.30+ | To clone the repository |
+| **CMake** | 3.18+ | Build system |
+| **LLVM/Clang** | 15.0+ | Backend for native code generation |
+| **Python** | 3.9+ (optional) | For the REPL and tooling scripts |
+| **Node.js** | 18+ (optional) | For the optional web‑assembly target |
 
-> **Note** – The core interpreter is pure‑Python, so you can run SHE on any platform that supports Python 3.9+. Native extensions (e.g., JIT, FFI) are optional.
+> **Note:** SHE can also be installed via pre‑built binaries (see the *Releases* page) if you don’t want to compile from source.
 
-### 1. Install from PyPI (recommended)
-
-```bash
-pip install she-lang
-```
-
-This command installs:
-
-* `she` – the interpreter binary (`she` command)  
-* `she-runtime` – the standard library package  
-* `she-dev` – optional development tools (linters, formatters)
-
-### 2. Install from source (latest development version)
+### 1. Clone the repository
 
 ```bash
-# Clone the repository
 git clone https://github.com/your-org/SHE.git
 cd SHE
-
-# Create a virtual environment (optional but recommended)
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-
-# Install the package in editable mode
-pip install -e .
 ```
 
-> **Tip** – After a source install, the `she` command points to the local checkout, so you can test changes instantly.
+### 2. Build from source (Linux/macOS/WSL)
 
-### 3. Verify the installation
+```bash
+# Create a build directory
+mkdir build && cd build
+
+# Configure the project
+cmake .. -DCMAKE_BUILD_TYPE=Release
+
+# Compile (uses all available cores)
+cmake --build . -- -j$(nproc)
+
+# Install system‑wide (optional, may require sudo)
+sudo cmake --install .
+```
+
+### 3. Build from source (Windows)
+
+```powershell
+# From PowerShell
+mkdir build
+cd build
+cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release
+# Optional: install
+cmake --install . --config Release
+```
+
+### 4. Using pre‑built binaries
+
+1. Go to the **Releases** page: <https://github.com/your-org/SHE/releases>
+2. Download the archive matching your OS (`she-linux-x86_64.tar.gz`, `she-windows-x86_64.zip`, etc.).
+3. Extract and add the `bin/` directory to your `PATH`.
+
+```bash
+# Example (Linux)
+tar -xzf she-linux-x86_64.tar.gz
+sudo mv she/bin/* /usr/local/bin/
+```
+
+### 5. Verify the installation
 
 ```bash
 she --version
-# Expected output, e.g.: SHE 1.4.2
+# Expected output, e.g.:
+# SHE version 0.9.3 (commit abcdef1, built 2025-09-26)
 ```
 
-If you see the version string, you’re ready to go!
+---
 
----  
+## Usage <a name="usage"></a>
 
-## Quick Start / Usage
+SHE can be used in three primary ways:
 
-### Running a script
+| Mode | Command | Description |
+|------|---------|-------------|
+| **REPL** | `she repl` | Interactive prompt for quick experiments. |
+| **Script** | `she run <file.she>` | Execute a SHE source file without compilation. |
+| **Compile** | `she build <file.she> -o <output>` | Produce a native executable (or WASM). |
+
+### 1. REPL
 
 ```bash
-she path/to/script.she
+$ she repl
+SHE 0.9.3 (interactive)
+>>> let x = 42
+>>> x * 2
+84
+>>> :help
+# ... list of REPL commands ...
+>>> :exit
 ```
 
-### Starting an interactive REPL
+### 2. Running a script
 
 ```bash
-she
-```
-
-You’ll see the familiar prompt:
-
-```
-SHE 1.4.2 >>> 
-```
-
-### One‑liner execution
-
-```bash
-she -c "print('Hello, SHE!')"
-```
-
-### Passing arguments to a script
-
-Inside a SHE script you can access the command‑line arguments via the built‑in `argv` array:
-
-```she
-# hello.she
-print("Script name:", argv[0])
-print("Arguments:", argv[1:])
-```
-
-```bash
-she hello.she foo bar
-# Output:
-# Script name: hello.she
-# Arguments: ['foo', 'bar']
-```
-
----  
-
-## Command Line Interface (CLI)
-
-| Option | Alias | Description |
-|--------|-------|-------------|
-| `-c <code>` | – | Execute the supplied code string and exit. |
-| `-i` | – | Force interactive mode after executing a script or `-c` code. |
-| `-v` | `--version` | Print the interpreter version and exit. |
-| `-h` | `--help` | Show the help message. |
-| `--no-stdlib` | – | Run the interpreter without loading the standard library (useful for sandboxing). |
-| `--log <file>` | – | Write runtime logs to the specified file (debugging). |
-| `--opt <level>` | – | Set optimization level (`0` = none, `1` = basic, `2` = aggressive). |
-
-**Example – Running with logging and no standard library**
-
-```bash
-she --no-stdlib --log she.log my_script.she
-```
-
----  
-
-## Embedding SHE in Your Projects (API)
-
-SHE can be embedded as a library, allowing you to evaluate SHE code, expose host functions, or build custom REPLs.
-
-### 1. Import the interpreter
-
-```python
-from she import Interpreter, RuntimeError
-```
-
-### 2. Create an interpreter instance
-
-```python
-interp = Interpreter()
-```
-
-### 3. Execute code
-
-```python
-result = interp.eval("2 + 2")
-print(result)   # → 4
-```
-
-### 4. Register a host function
-
-```python
-def py_greet(name: str) -> str:
-    return f"Hello from Python, {name}!"
-
-interp.register_function("greet", py_greet)
-
-# Now usable from SHE:
-interp.eval('print(greet("SHE"))')
-# → Hello from Python, SHE!
-```
-
-### 5. Capture stdout / stderr
-
-```python
-from io import StringIO
-
-out_buf = StringIO()
-err_buf = StringIO()
-
-interp.set_output(out_buf, err_buf)
-
-interp.eval('print("Hello")')
-print("Captured:", out_buf.getvalue())   # → Captured: Hello\n
-```
-
-### 6. Using the REPL programmatically
-
-```python
-from she.repl import REPL
-
-repl = REPL(interpreter=interp)
-repl.run()   # Starts an interactive session inside your Python process
-```
-
-### 7. Loading modules dynamically
-
-```python
-interp.import_module("math")   # Loads the built‑in math module
-print(interp.eval("math.sqrt(16)"))   # → 4.0
-```
-
-### 8. Error handling
-
-```python
-try:
-    interp.eval("unknown_var + 1")
-except RuntimeError as exc:
-    print("SHE error:", exc)
-```
-
----  
-
-## Standard Library Overview
-
-| Module | Description | Example |
-|--------|-------------|---------|
-| `io` | File I/O, streams, and buffered readers/writers. | `f = open("data.txt", "r")` |
-| `math` | Common mathematical functions (`sin`, `cos`, `sqrt`, …). | `math.sqrt(9)` |
-| `json` | Encode/decode JSON data. | `json.encode({a:1})` |
-| `time` | Time utilities (`now`, `sleep`, `format`). | `time.sleep(0.5)` |
-| `os` | OS interaction (env vars, process control). | `os.getenv("HOME")` |
-| `collections` | Data structures (`list`, `map`, `set`, `queue`). | `queue = collections.Queue()` |
-| `http` | Simple HTTP client (`get`, `post`). | `http.get("https://api.example.com")` |
-| `ffi` *(optional)* | Foreign Function Interface for calling C libraries. | `ffi.load("libc.so").printf("Hi\n")` |
-
-> **Tip** – To keep the runtime minimal, the interpreter loads the standard library lazily (on first use). Use `--no-stdlib` to disable it entirely.
-
----  
-
-## Examples
-
-### 1. Hello World
-
-```she
 # hello.she
 print("Hello, SHE!")
+
+# Execute
+she run hello.she
+# → Hello, SHE!
 ```
+
+### 3. Compiling to a native binary
 
 ```bash
-she hello.she
+she build hello.she -o hello
+./hello
+# → Hello, SHE!
 ```
 
-### 2. Fibonacci (recursive)
+#### Common build flags
 
-```she
-# fib.she
-def fib(n) {
-    if n <= 1 { return n }
-    return fib(n - 1) + fib(n - 2)
-}
+| Flag | Description |
+|------|-------------|
+| `-O0`, `-O1`, `-O2`, `-O3` | Optimization level (default: `-O2`). |
+| `--target wasm32` | Emit WebAssembly module (`.wasm`). |
+| `--no-stdlib` | Build without linking the standard library (advanced). |
+| `-D<NAME>=<VALUE>` | Define a compile‑time constant (e.g., `-DDEBUG=1`). |
+| `--emit-llvm` | Output LLVM IR (`.ll`) instead of native code. |
 
-for i in 0..10 {
-    print(i, "→", fib(i))
-}
+### 4. Project layout (recommended)
+
+```
+my_project/
+├─ src/
+│   ├─ main.she          # entry point
+│   └─ utils.she
+├─ tests/
+│   └─ utils_test.she
+├─ she.toml              # project manifest (see below)
+└─ README.md
 ```
 
-### 3. Simple HTTP GET
+#### `she.toml` – Minimal manifest
 
-```she
-import http
+```toml
+[package]
+name = "my_project"
+version = "0.1.0"
+edition = "2025"
 
-resp = http.get("https://api.github.com/repos/your-org/SHE")
-if resp.status == 200 {
-    data = json.decode(resp.body)
-    print("Stars:", data["stargazers_count"])
-} else {
-    print("Request failed:", resp.status)
-}
+[dependencies]
+# Example: "json" = "0.3.2"
 ```
 
-### 4. Embedding SHE in a Python CLI tool
-
-```python
-# cli_tool.py
-import argparse
-from she import Interpreter
-
-parser = argparse.ArgumentParser(description="Run SHE snippets")
-parser.add_argument("code", help="SHE code to execute")
-args = parser.parse_args()
-
-interp = Interpreter()
-result = interp.eval(args.code)
-print("Result →", result)
-```
+You can then build the whole project with:
 
 ```bash
-python cli_tool.py "len([1,2,3,4]) * 2"
-# Output: Result → 8
+she build src/main.she -p my_project -o my_project
 ```
 
-### 5. Using the FFI (optional native extension)
+---
 
-```she
-# ffi_example.she
-import ffi
+## API Documentation <a name="api-documentation"></a>
 
-# Load the C standard library (platform‑specific name)
-libc = ffi.load("libc.so.6")   # Linux; use "msvcrt.dll" on Windows
+> **All API docs are generated automatically** with `she doc`. The latest HTML docs are hosted at <https://your-org.github.io/SHE/docs>.
 
-# Call printf directly
-libc.printf("Hello from C! Number: %d\n", 42)
+Below is a concise overview of the core language constructs and the most used standard‑library modules.
+
+### 1. Language Core
+
+| Construct | Syntax | Description |
+|-----------|--------|-------------|
+| **Variables** | `let name: Type = expr;` | Immutable by default. Use `var` for mutable bindings. |
+| **Functions** | `fn name(arg: Type) -> ReturnType { … }` | First‑class, can be generic. |
+| **Algebraic Data Types** | `enum Option<T> { Some(T), None }` | Sum types with pattern matching. |
+| **Pattern Matching** | `match expr { pattern => expr, … }` | Exhaustive matching on enums, tuples, structs. |
+| **Traits (Interfaces)** | `trait Drawable { fn draw(&self); }` | Define behavior that types can implement. |
+| **Generics** | `fn map<T, U>(list: List<T>, f: fn(T) -> U) -> List<U>` | Parametric polymorphism. |
+| **Modules** | `mod math { … }` | Namespaces; can be split across files (`mod foo;`). |
+| **Error handling** | `Result<T, E>` | Use `?` operator to propagate errors. |
+| **Concurrency** | `async fn`, `await`, `spawn` | Built‑in async/await and lightweight tasks. |
+
+### 2. Standard Library Highlights
+
+| Module | Primary Types / Functions | Example |
+|--------|---------------------------|---------|
+| `std::io` | `File`, `stdin`, `stdout`, `read_line` | `let line = std::io::read_line()?;` |
+| `std::fs` | `read_to_string`, `write`, `metadata` | `std::fs::write("out.txt", data)?;` |
+| `std::net` | `TcpListener`, `TcpStream`, `HttpClient` | `let srv = std::net::TcpListener::bind("0.0.0.0:8080")?;` |
+| `std::collections` | `Vec<T>`, `HashMap<K,V>`, `HashSet<T>` | `let mut map = std::collections::HashMap::new();` |
+| `std::fmt` | `format!`, `println!` | `println!("Value = {}", x);` |
+| `std::time` | `Instant`, `Duration`, `sleep` | `std::time::sleep(Duration::seconds(1));` |
+| `std::async` | `spawn`, `await`, `Task<T>` | `let handle = std::async::spawn(async { … });` |
+| `std::json` | `parse`, `to_string` | `let obj = std::json::parse("{\"a\":1}")?;` |
+| `std::crypto` | `sha256`, `hmac`, `rand_bytes` | `let digest = std::crypto::sha256(data);` |
+
+### 3. Generating API Docs
+
+```bash
+# Generate HTML docs in ./target/doc
+she doc
+
+# Serve locally (auto‑reload on changes)
+she doc --serve
 ```
 
-### 6. Building a tiny web server (using `http`)
-
-```she
-import http
-
-fn handler(req) {
-    return {
-        "status": 200,
-        "headers": {"Content-Type
+The
