@@ -1,226 +1,222 @@
-# SHE – A Programming Language  
-**Repository:** `github.com/your-org/SHE`  
-**Current version:** `v2.4.1` (released 2025‑09‑20)  
-
-> **SHE** (pronounced “sh‑ee”) is a modern, statically‑typed, compiled language designed for rapid prototyping, safe concurrency, and seamless inter‑op with existing C/C++/Rust ecosystems. It ships with a fast LLVM‑based compiler, an interactive REPL, and a rich standard library.
+# SHE – *A Programming Language*  
+**Version:** 1.4.2 (2025‑09‑30)  
+**Repository:** https://github.com/your-org/SHE  
 
 ---
 
 ## Table of Contents
-1. [Installation](#installation)  
-2. [Quick Start / Usage](#quick-start--usage)  
-3. [Command‑Line Interface (CLI)](#command-line-interface-cli)  
+1. [Overview](#overview)  
+2. [Installation](#installation)  
+   - [Prerequisites](#prerequisites)  
+   - [Binary Releases](#binary-releases)  
+   - [Building from Source](#building-from-source)  
+   - [Docker Image](#docker-image)  
+   - [Package Manager (Homebrew / Scoop)](#package-manager)  
+3. [Usage](#usage)  
+   - [REPL](#repl)  
+   - [Compiling & Running](#compiling-and-running)  
+   - [Project Layout](#project-layout)  
+   - [Command‑Line Options](#command-line-options)  
 4. [API Documentation](#api-documentation)  
-5. [Standard Library Overview](#standard-library-overview)  
-6. [Examples](#examples)  
-7. [Contributing & Development](#contributing--development)  
-8. [License](#license)  
+   - [Core Packages](#core-packages)  
+   - [Standard Library](#standard-library)  
+   - [Embedding SHE in Other Apps](#embedding-she)  
+5. [Examples](#examples)  
+   - [Hello, World!](#hello-world)  
+   - [Basic I/O](#basic-io)  
+   - [Functions & Closures](#functions-closures)  
+   - [Pattern Matching](#pattern-matching)  
+   - [Concurrency (Actors)](#concurrency-actors)  
+   - [Embedding SHE in Go](#embedding-in-go)  
+6. [Contributing](#contributing)  
+7. [License](#license)  
 
 ---  
 
-## Installation  
+## Overview <a name="overview"></a>
 
-SHE can be installed on Linux, macOS, and Windows. Choose the method that best fits your workflow.
+SHE (pronounced “sh”) is a modern, statically‑typed, functional‑imperative programming language designed for **simplicity**, **expressiveness**, and **high‑performance** execution. It ships with a fast ahead‑of‑time compiler (`shec`), an interactive REPL (`she`), and a small but powerful standard library.
 
-### 1. Pre‑built Binaries (recommended)
+Key features:
 
-| OS | Architecture | Download |
-|----|--------------|----------|
-| Linux (glibc) | x86_64 | `curl -L https://github.com/your-org/SHE/releases/download/v2.4.1/she-linux-x86_64.tar.gz \| tar -xz && sudo mv she /usr/local/bin/` |
-| macOS (Apple Silicon) | arm64 | `brew install your-org/tap/she` |
-| macOS (Intel) | x86_64 | `brew install your-org/tap/she` |
-| Windows | x86_64 | Download `she-windows-x86_64.zip` from the releases page, extract, and add the `she.exe` folder to your `PATH`. |
+| Feature | Description |
+|---------|-------------|
+| **Static typing with type inference** | No need for explicit type annotations in most cases. |
+| **Pattern matching** | Exhaustive, first‑class pattern matching on algebraic data types. |
+| **Immutable by default** | Mutability is opt‑in via `mut`. |
+| **Concurrent actors** | Lightweight actors with mailbox semantics. |
+| **Seamless C/Go interop** | Call native functions directly from SHE. |
+| **Extensible standard library** | Modules for I/O, networking, crypto, data structures, etc. |
+| **Tooling** | REPL, LSP server, formatter (`shefmt`), and debugger (`shedb`). |
 
-> **Tip:** Verify the installation with `she --version`. You should see `she version 2.4.1`.
+---  
 
-### 2. Install via Package Managers  
+## Installation <a name="installation"></a>
 
-| Manager | Command |
-|---------|---------|
-| **Homebrew (macOS/Linux)** | `brew install your-org/tap/she` |
-| **Scoop (Windows)** | `scoop bucket add your-org https://github.com/your-org/scoop-bucket.git`<br>`scoop install she` |
-| **Cargo (Rust)** | `cargo install shec` *(installs only the compiler front‑end)* |
-| **Conda** | `conda install -c conda-forge she` |
+### Prerequisites <a name="prerequisites"></a>
 
-### 3. Build from Source  
+| OS | Required |
+|----|----------|
+| Linux (glibc ≥ 2.28) | `gcc`/`clang` ≥ 10, `make`, `git` |
+| macOS (Catalina+) | Xcode command‑line tools |
+| Windows 10+ | Visual Studio Build Tools 2022 (or MSYS2) |
+| Docker | Docker Engine ≥ 20.10 |
 
-> **Prerequisites**  
-> - **LLVM 16+** (or use the bundled LLVM via `./scripts/setup-llvm.sh`)  
-> - **CMake ≥ 3.20**  
-> - **Git**  
-> - **A C++20‑compatible compiler** (gcc‑13, clang‑16, MSVC 19.38+)
+> **Tip:** The binary releases are built with `musl` on Linux, so they run on any glibc version.
+
+### Binary Releases <a name="binary-releases"></a>
+
+1. Download the appropriate archive from the **Releases** page:  
+
+   ```bash
+   # Linux (x86_64)
+   curl -LO https://github.com/your-org/SHE/releases/download/v1.4.2/she-v1.4.2-linux-x86_64.tar.gz
+   tar -xzf she-v1.4.2-linux-x86_64.tar.gz
+   sudo mv she /usr/local/bin/
+   ```
+
+   ```powershell
+   # Windows (x86_64)
+   Invoke-WebRequest -Uri https://github.com/your-org/SHE/releases/download/v1.4.2/she-v1.4.2-windows-x86_64.zip -OutFile she.zip
+   Expand-Archive she.zip -DestinationPath $env:USERPROFILE\bin
+   ```
+
+2. Verify the installation:
+
+   ```bash
+   $ shec --version
+   SHE Compiler version 1.4.2
+   ```
+
+### Building from Source <a name="building-from-source"></a>
 
 ```bash
 # Clone the repo
 git clone https://github.com/your-org/SHE.git
 cd SHE
 
-# Optional: fetch sub‑modules (e.g., stdlib tests)
-git submodule update --init --recursive
+# Checkout the latest stable tag (optional)
+git checkout v1.4.2
 
-# Build (Release)
-mkdir -p build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
-cmake --build . --target all -j$(nproc)
-
-# Install system‑wide (requires sudo on *nix)
-sudo cmake --install .
+# Build (requires Go ≥ 1.22)
+make all          # builds shec, she (REPL), shefmt, shedb
+sudo make install # installs binaries to /usr/local/bin (Linux/macOS)
 ```
 
-The build produces three primary artifacts:
+**Makefile targets**
 
-| Artifact | Description |
-|----------|-------------|
-| `shec`   | The compiler driver (`shec <source> -o <binary>`). |
-| `she-repl` | Interactive REPL (`she-repl`). |
-| `she-lib` | Static library (`libshe.a`) for embedding the runtime in other projects. |
+| Target | Description |
+|--------|-------------|
+| `all` | Build all executables (`shec`, `she`, `shefmt`, `shedb`). |
+| `test` | Run the full test suite (`go test ./...`). |
+| `bench` | Run benchmarks (`go test -bench=. ./...`). |
+| `clean` | Remove generated files. |
+| `install` | Copy binaries to `$PREFIX/bin` (`/usr/local` by default). |
 
-### 4. Docker (for CI / sandboxed environments)
+### Docker Image <a name="docker-image"></a>
 
-```dockerfile
-FROM ghcr.io/your-org/she:2.4.1
-WORKDIR /app
-COPY . .
-RUN shec main.she -o /app/main
-CMD ["/app/main"]
-```
-
-Pull the image: `docker pull ghcr.io/your-org/she:2.4.1`.
-
----
-
-## Quick Start / Usage  
-
-### 1. Hello, World!
-
-Create a file `hello.she`:
-
-```she
-// hello.she
-import std.io;
-
-fn main() -> i32 {
-    io.println("Hello, SHE!");
-    return 0;
-}
-```
-
-Compile and run:
+A minimal Docker image is published to Docker Hub:
 
 ```bash
-shec hello.she -o hello
-./hello
-# → Hello, SHE!
+docker pull yourorg/she:1.4.2
+docker run --rm -it yourorg/she:1.4.2 she --help
 ```
 
-### 2. REPL
+You can also mount a local project:
 
 ```bash
-she-repl
->>> let x: i32 = 42;
+docker run --rm -it \
+  -v "$(pwd)":/workspace \
+  -w /workspace \
+  yourorg/she:1.4.2 \
+  shec build .
+```
+
+### Package Manager (Homebrew / Scoop) <a name="package-manager"></a>
+
+- **macOS (Homebrew)**  
+
+  ```bash
+  brew tap your-org/she
+  brew install she
+  ```
+
+- **Windows (Scoop)**  
+
+  ```powershell
+  scoop bucket add she https://github.com/your-org/scoop-she.git
+  scoop install she
+  ```
+
+---  
+
+## Usage <a name="usage"></a>
+
+### REPL <a name="repl"></a>
+
+Start an interactive session:
+
+```bash
+$ she
+SHE 1.4.2 (repl) ── type `:help` for commands
+>>> let x = 42
 >>> x * 2
 84
 >>> :quit
 ```
 
-### 3. Project Layout (recommended)
+**REPL shortcuts**
 
-```
-my_project/
-├─ src/
-│   ├─ main.she
-│   └─ utils.she
-├─ tests/
-│   └─ utils_test.she
-├─ she.toml          # project manifest (see below)
-└─ README.md
-```
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl‑L` | Clear screen |
+| `:load <file>` | Load a script into the current session |
+| `:type <expr>` | Show inferred type |
+| `:reset` | Reset the REPL state |
+| `:help` | Show help |
 
-#### `she.toml` – Minimal Manifest
-
-```toml
-[package]
-name = "my_project"
-version = "0.1.0"
-edition = "2025"
-
-[dependencies]
-std = "2.4"
-```
-
-Build the whole project with the **project mode**:
+### Compiling & Running <a name="compiling-and-running"></a>
 
 ```bash
-shec build          # equivalent to `shec src/main.she -o my_project`
+# Compile a single file
+shec build hello.she -o hello
+
+# Run the compiled binary
+./hello
+
+# Compile a whole project (looks for she.mod)
+shec build . -o myapp
 ```
 
-### 4. Common CLI Flags
+**Project layout**
+
+```
+myapp/
+├─ she.mod          # module definition (name, version, dependencies)
+├─ src/
+│   ├─ main.she     # entry point (must contain `fn main() -> Int { … }`)
+│   └─ lib/
+│       └─ utils.she
+└─ tests/
+    └─ utils_test.she
+```
+
+### Command‑Line Options <a name="command-line-options"></a>
 
 | Flag | Description |
 |------|-------------|
 | `-o <file>` | Output binary name (default: `a.out`). |
-| `-O0 … -O3` | Optimization level (default: `-O2`). |
-| `-g` | Emit debug symbols (useful with `lldb` or `gdb`). |
-| `--target <triple>` | Cross‑compile (e.g., `x86_64-pc-windows-msvc`). |
-| `--emit <type>` | Emit intermediate artifacts (`llvm-ir`, `obj`, `asm`). |
-| `--run` | Compile **and** execute in one step (`shec foo.she --run`). |
-| `--repl` | Shortcut to start the REPL (`shec --repl`). |
-| `--test` | Run all `*_test.she` files under `tests/`. |
-| `--fmt` | Auto‑format source files (uses `shefmt`). |
-| `--doc` | Generate API docs (see **API Documentation** section). |
+| `-I <dir>` | Add an import search path. |
+| `-L <dir>` | Add a native library search path (for `extern`). |
+| `-g` | Emit debug symbols (for `shedb`). |
+| `-O0 … -O3` | Optimization level (default `-O2`). |
+| `--target <arch>` | Cross‑compile (`x86_64`, `aarch64`, `wasm32`). |
+| `--fmt` | Run the formatter on source files (alias for `shefmt`). |
+| `--version` | Print version and exit. |
+| `--help` | Show help. |
 
----
+---  
 
-## Command‑Line Interface (CLI)
+## API Documentation <a name="api-documentation"></a>
 
-```
-shec [OPTIONS] <INPUT>...
-
-Options:
-  -o <FILE>            Write output to <FILE>
-  -O0|-O1|-O2|-O3      Optimization level (default -O2)
-  -g                   Generate debug info
-  --target <TRIPLE>    Cross‑compile target
-  --emit <TYPE>        Emit intermediate files (llvm-ir|obj|asm)
-  --run                Compile and immediately run
-  --repl               Start interactive REPL
-  --test               Run test suite
-  --fmt                Format source files
-  --doc                Generate documentation (HTML)
-  -h, --help           Print help information
-  -V, --version        Print version information
-```
-
-**Examples**
-
-```bash
-# Compile with maximum optimizations and run
-shec -O3 main.she --run
-
-# Cross‑compile for ARM Linux
-shec -O2 --target aarch64-unknown-linux-gnu src/main.she -o myapp
-
-# Generate LLVM IR for inspection
-shec --emit llvm-ir src/main.she -o main.ll
-
-# Run all tests
-shec --test
-```
-
----
-
-## API Documentation  
-
-SHE ships with a built‑in documentation generator (`shec --doc`). The generated HTML lives under `target/doc/` and can be served locally with any static file server.
-
-### 1. Core Language Constructs  
-
-| Construct | Syntax | Description |
-|-----------|--------|-------------|
-| **Functions** | `fn name(arg: Type) -> ReturnType { … }` | First‑class, can be generic, supports overloading. |
-| **Structs** | `struct Point { x: f64, y: f64 }` | Value types with optional `impl` blocks. |
-| **Enums** | `enum Result<T, E> { Ok(T), Err(E) }` | Tagged unions with pattern matching. |
-| **Traits** | `trait Display { fn fmt(&self) -> String; }` | Similar to Rust traits; can be auto‑implemented. |
-| **Generics** | `fn map<T, U>(arr: []T, f: fn(T) -> U) -> []U` | Fully monomorphized at compile time. |
-| **Concurrency** | `spawn fn foo() { … }` | Light‑weight green threads (fibers) built on top of OS threads. |
-| **Unsafe** | `unsafe { … }` | Allows raw pointer manipulation, FFI, and manual memory
+> **NOTE:** The API docs are generated automatically with `godoc`‑style comments and are hosted at https://your
