@@ -33,8 +33,11 @@ dependencies = []
 
 [project.optional-dependencies]
 crypto = ["kaalka>=5.0.0"]
-web = ["webweavex>=3.0.0"]
-all = ["kaalka>=5.0.0", "webweavex>=3.0.0"]
+# WebWeaveX 3.x needs Python 3.10+. SHE core does not, so the marker keeps 3.9
+# working rather than dragging the whole language up a version; the `web`
+# module says how to install it if you reach for it there.
+web = ["webweavex>=3.0.0; python_version >= '3.10'"]
+all = ["kaalka>=5.0.0", "webweavex>=3.0.0; python_version >= '3.10'"]
 dev = ["pytest>=7", "ruff>=0.4", "build>=1.0"]
 
 [project.urls]

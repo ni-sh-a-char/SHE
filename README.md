@@ -132,6 +132,9 @@ Nothing to compile, no toolchain to install. If you have Python 3.9+, you have S
 pip install "she-lang[all]"   # adds the crypto and web modules
 ```
 
+`crypto` works on any supported Python. `web` wraps WebWeaveX, which needs
+Python 3.10 or newer — on 3.9 it is skipped and the module tells you so.
+
 ---
 
 ## A tour in sixty seconds
