@@ -46,7 +46,7 @@ Documentation = "https://ni-sh-a-char.github.io/SHE/docs.html"
 Repository = "https://github.com/ni-sh-a-char/SHE"
 Issues = "https://github.com/ni-sh-a-char/SHE/issues"
 Changelog = "https://github.com/ni-sh-a-char/SHE/blob/main/CHANGELOG.md"
-Funding = "https://buymeacoffee.com/piyushmishra"
+Funding = "https://buymeacoffee.com/piyushmishra00"
 
 [project.scripts]
 she = "she.cli:main"

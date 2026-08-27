@@ -359,7 +359,7 @@ Good first issues are labelled [`good first issue`](https://github.com/ni-sh-a-c
 
 SHE is free, Apache-2.0, and built in the open. If it saved you time, taught you something, or you just want to see it keep going:
 
-<a href="https://buymeacoffee.com/piyushmishra">
+<a href="https://buymeacoffee.com/piyushmishra00">
   <img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy me a coffee">
 </a>
 

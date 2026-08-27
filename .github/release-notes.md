@@ -76,3 +76,7 @@ and 3.13, plus lint, sandbox and packaging jobs. Ten runnable examples.
 
 The full [changelog](https://github.com/ni-sh-a-char/SHE/blob/main/CHANGELOG.md) lists
 the eight defects carried over from 1.0 that this release fixes, each now covered by a test.
+
+---
+
+SHE is free and Apache 2.0. If it saved you time, [a coffee](https://buymeacoffee.com/piyushmishra00) keeps it moving — and a star helps others find it.

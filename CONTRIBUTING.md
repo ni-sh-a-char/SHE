@@ -118,6 +118,13 @@ more than three paragraphs of description.
 
 Do not open a public issue for a sandbox escape. See [SECURITY.md](SECURITY.md).
 
+## Not writing code?
+
+Reporting a confusing error message, or telling us which bit of syntax
+made you stop and think, is a real contribution. So is
+[buying a coffee](https://buymeacoffee.com/piyushmishra00) or starring the repo — both help more
+than you would think.
+
 ## Code of conduct
 
 By taking part you agree to the [Code of Conduct](CODE_OF_CONDUCT.md).

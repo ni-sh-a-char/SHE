@@ -24,3 +24,7 @@ she doc math             # one module in full
 
 From inside a program, `help(math)` prints the same thing, and `help(value)`
 describes any value along with what you can do with it.
+
+---
+
+SHE is free and built in the open. [Buy me a coffee](https://buymeacoffee.com/piyushmishra00) if it helped.
