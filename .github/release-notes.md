@@ -1,0 +1,78 @@
+## SHE 2.0
+
+A programming language that reads like English — and can't touch your machine unless you say so.
+
+**[Try it in your browser](https://ni-sh-a-char.github.io/SHE/playground.html)** · **[Docs](https://ni-sh-a-char.github.io/SHE/docs.html)** · **[Examples](https://github.com/ni-sh-a-char/SHE/tree/main/examples)**
+
+```sh
+pip install she-lang
+```
+
+```she
+let name = ask "What is your name?"
+say "Hello, {name}!"
+
+say [4, 8, 15, 16, 23, 42]
+  |> filter(fun(n) -> n % 2 is 0)
+  |> map(fun(n) -> n / 2)
+  |> sum()
+```
+
+### What this release is
+
+A complete rewrite. SHE 1.0 was a BASIC-style interpreter of about 2,200 lines that
+could not carry types, modules, exceptions or pattern matching without collapsing.
+The old interpreter is archived on the [`v1.0.0`](https://github.com/ni-sh-a-char/SHE/tree/v1.0.0)
+branch, and the docs carry a [line-by-line migration table](https://ni-sh-a-char.github.io/SHE/docs.html#migrating).
+
+### The language
+
+English-keyword syntax with `end`-terminated blocks — no braces, no significant
+whitespace. Real booleans and a real `nothing`. Text interpolation where a `{` that
+holds no valid expression stays literal, so JSON and CSS need no escaping. `let`
+immutable by default. Lists, maps, ranges, slices, destructuring and spread.
+Functions with defaults, named arguments, rest parameters and closures. Types with
+methods, inheritance and `setup`/`to_text` hooks. Pattern matching over literals,
+ranges, guards, lists, maps and types. `try`/`catch`/`finally` with catch-by-kind.
+Gradual typing. `async`/`await`. Modules and file imports. `test`/`expect` blocks.
+Pipelines, safe navigation, and methods on every value.
+
+### Permissions, which is the point
+
+A program starts with no authority at all — no files, no network, no processes, no
+environment:
+
+```sh
+she run report.she                       # arithmetic only
+she run report.she --allow-read=./data   # now it can read that one folder
+```
+
+Anything ungranted fails with a message naming the exact flag that would allow it.
+`tools/check_sandbox.py` asserts 11 refusals and 7 allowances on every push.
+
+### Included
+
+`crypto` wraps [Kaalka](https://github.com/PIYUSH-MISHRA-00/Kaalka-Encryption-Algorithm)
+with base64-armoured `seal`/`open` and checksummed `envelope`/`open_envelope`, alongside
+vetted `hash`, `hmac`, `password_hash` and `token`. `web` wraps
+[WebWeaveX](https://github.com/ni-sh-a-char/WebWeaveX) for deterministic extraction and
+graph queries. Both optional; both fail with a clear install message.
+
+> Kaalka is a novel construction that has not been through public cryptanalysis. SHE
+> ships it for time-keyed handoff, puzzles and teaching, and says so in the module,
+> the docs and [SECURITY.md](https://github.com/ni-sh-a-char/SHE/blob/main/SECURITY.md).
+> For secrets that matter, use the vetted primitives in the same module.
+
+### Tooling
+
+REPL, `run`, `test`, `fmt`, `check`, `new`, `doc`, `lsp`. A formatter that works on
+tokens so comments survive. A language server. A VS Code extension. A browser
+playground running the real interpreter via Pyodide.
+
+### Verified
+
+145 Python tests and 8 SHE tests across Linux, macOS and Windows on Python 3.9, 3.11
+and 3.13, plus lint, sandbox and packaging jobs. Ten runnable examples.
+
+The full [changelog](https://github.com/ni-sh-a-char/SHE/blob/main/CHANGELOG.md) lists
+the eight defects carried over from 1.0 that this release fixes, each now covered by a test.

@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   verify:
+    name: everything passes before anything ships
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,6 +21,7 @@ jobs:
       - run: pytest -q
       - run: python tools/check_sandbox.py
       - name: The tag matches the version in the package
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           tag="${GITHUB_REF_NAME#v}"
           version=$(python -c "import she; print(she.__version__)")
@@ -28,15 +30,10 @@ jobs:
             exit 1
           fi
 
-  publish:
+  build:
+    name: build the distributions
     needs: verify
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/project/she-lang/
-    permissions:
-      id-token: write        # trusted publishing — no API token stored anywhere
-      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -44,13 +41,53 @@ jobs:
           python-version: "3.12"
       - run: pip install build
       - run: python -m build
+      - name: The wheel installs and runs
+        run: |
+          pip install dist/*.whl
+          she --version
+          echo 'say "released"' > /tmp/r.she && she run /tmp/r.she
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
 
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-
-      - name: Draft the GitHub release
-        uses: softprops/action-gh-release@v2
+  github-release:
+    # Deliberately independent of PyPI: publishing to PyPI needs a trusted
+    # publisher configured on pypi.org, and a release should not be blocked
+    # waiting for that.
+    name: publish the GitHub release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - uses: softprops/action-gh-release@v2
         with:
           files: dist/*
           generate_release_notes: true
-          draft: true
+          body_path: .github/release-notes.md
+          fail_on_unmatched_files: false
+
+  pypi:
+    name: publish to PyPI
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/she-lang/
+    permissions:
+      id-token: write        # trusted publishing — no API token stored anywhere
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
