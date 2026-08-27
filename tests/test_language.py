@@ -815,3 +815,28 @@ def test_nothing_is_not_zero():
 def test_true_is_not_one():
     """v1 used 1/0 for booleans. Real booleans are their own thing now."""
     assert go("say true is 1").strip() == "false"
+
+
+# --- optional extras degrade instead of crashing ----------------------------
+
+def test_missing_optional_module_is_catchable():
+    """`web` and `crypto` are optional extras. A program must be able to notice
+    one is absent and carry on, rather than dying at the import."""
+    source = """
+import web
+fun available?()
+  try
+    web.version()
+    return true
+  catch e: ImportError
+    return false
+  end
+end
+say type_of(available?())
+"""
+    assert go(source).strip() == "bool"
+
+
+def test_import_of_an_optional_module_never_fails():
+    """Importing is always fine; only reaching for a function can fail."""
+    assert go("import web\nimport crypto\nsay 1").strip() == "1"

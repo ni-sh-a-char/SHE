@@ -11,6 +11,24 @@
 
 import web
 
+# `web` is an optional extra, so check it is there before leaning on it.
+# This is how any program should treat a module it does not strictly need.
+fun available?()
+  try
+    web.version()
+    return true
+  catch e: ImportError
+    return false
+  end
+end
+
+if not available?()
+  say "WebWeaveX is not installed, so there is nothing to show here."
+  say "  install it with:  pip install \"she-lang[web]\""
+  say "  it needs Python 3.10 or newer."
+  exit(0)
+end
+
 say "WebWeaveX {web.version()}"
 
 # --- fingerprints are deterministic -------------------------------------
