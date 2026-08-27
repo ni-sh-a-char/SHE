@@ -5,7 +5,7 @@ All notable changes to SHE. This project follows [semantic versioning](https://s
 ## [2.0.0] — 2026-08-27
 
 A complete rewrite. SHE 2.0 does not run SHE 1.0 programs; the old interpreter is
-archived on the `v1.0.0` branch, and [the docs](https://she-lang.dev/docs#migrating)
+archived on the `v1.0.0` branch, and [the docs](https://ni-sh-a-char.github.io/SHE/docs.html#migrating)
 carry a line-by-line translation table.
 
 ### Why rewrite
@@ -99,7 +99,7 @@ Defects carried over from 1.0, each now covered by a test:
 
 ### Removed
 
-- The entire v1 syntax. See the [migration table](https://she-lang.dev/docs#migrating).
+- The entire v1 syntax. See the [migration table](https://ni-sh-a-char.github.io/SHE/docs.html#migrating).
 - `docs/README.md`, which described a statically typed compiled language with an
   ahead-of-time compiler, actors, an LSP and a Homebrew tap — none of which
   existed. It has been replaced with documentation of what SHE actually does.

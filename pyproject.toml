@@ -38,8 +38,8 @@ all = ["kaalka>=5.0.0", "webweavex>=3.0.0"]
 dev = ["pytest>=7", "ruff>=0.4", "build>=1.0"]
 
 [project.urls]
-Homepage = "https://she-lang.dev"
-Documentation = "https://she-lang.dev/docs"
+Homepage = "https://ni-sh-a-char.github.io/SHE/"
+Documentation = "https://ni-sh-a-char.github.io/SHE/docs.html"
 Repository = "https://github.com/ni-sh-a-char/SHE"
 Issues = "https://github.com/ni-sh-a-char/SHE/issues"
 Changelog = "https://github.com/ni-sh-a-char/SHE/blob/main/CHANGELOG.md"

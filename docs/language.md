@@ -1,7 +1,7 @@
 # The SHE language
 
 The complete reference. Every snippet here runs as written — paste any of them
-into [the playground](https://she-lang.dev/playground) or a `.she` file.
+into [the playground](https://ni-sh-a-char.github.io/SHE/playground.html) or a `.she` file.
 
 - [Values](#values)
 - [Text](#text)

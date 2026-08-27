@@ -10,9 +10,9 @@
 [![PyPI](https://img.shields.io/pypi/v/she-lang?color=7C3AED&label=pypi)](https://pypi.org/project/she-lang/)
 [![Python](https://img.shields.io/badge/python-3.9%2B-4F46E5)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-06B6D4)](LICENCE)
-[![Try it](https://img.shields.io/badge/try%20it-in%20your%20browser-7C3AED)](https://she-lang.dev/playground)
+[![Try it](https://img.shields.io/badge/try%20it-in%20your%20browser-7C3AED)](https://ni-sh-a-char.github.io/SHE/playground.html)
 
-[**Try it now**](https://she-lang.dev/playground) · [**Docs**](https://she-lang.dev/docs) · [**Examples**](examples/) · [**Discussions**](https://github.com/ni-sh-a-char/SHE/discussions)
+[**Try it now**](https://ni-sh-a-char.github.io/SHE/playground.html) · [**Docs**](https://ni-sh-a-char.github.io/SHE/docs.html) · [**Examples**](examples/) · [**Discussions**](https://github.com/ni-sh-a-char/SHE/discussions)
 
 </div>
 
@@ -246,7 +246,7 @@ end
 | **Security** | capability sandbox, step and time budgets, vetted crypto primitives |
 | **Tooling** | REPL, formatter, test runner, project scaffolder, doc browser, language server |
 
-Full reference: **[she-lang.dev/docs](https://she-lang.dev/docs)**
+Full reference: **[ni-sh-a-char.github.io/SHE/docs.html](https://ni-sh-a-char.github.io/SHE/docs.html)**
 
 ---
 
@@ -381,5 +381,5 @@ Apache 2.0 — see [LICENCE](LICENCE). Use it for anything, including commercial
 
 <div align="center">
 <br>
-<sub>Built by <a href="https://github.com/PIYUSH-MISHRA-00">Piyush Mishra</a> · <a href="https://she-lang.dev">she-lang.dev</a></sub>
+<sub>Built by <a href="https://github.com/PIYUSH-MISHRA-00">Piyush Mishra</a> · <a href="https://ni-sh-a-char.github.io/SHE/">ni-sh-a-char.github.io/SHE</a></sub>
 </div>

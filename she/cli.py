@@ -55,7 +55,7 @@ HELP = """\033[1mUsage\033[0m
 \033[1mMore\033[0m
   --version, -v              print the version
   --help, -h                 this message
-  docs: https://she-lang.dev
+  docs: https://ni-sh-a-char.github.io/SHE/
 """
 
 REPL_HELP = """\033[1mAt the prompt\033[0m
@@ -98,7 +98,7 @@ permissions = []
 
 README_TEMPLATE = """# {name}
 
-Built with [SHE](https://she-lang.dev).
+Built with [SHE](https://ni-sh-a-char.github.io/SHE/).
 
 ## Run it
 

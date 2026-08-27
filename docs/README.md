@@ -1,6 +1,6 @@
 # SHE documentation
 
-The full reference lives at **[she-lang.dev/docs](https://she-lang.dev/docs)** —
+The full reference lives at **[ni-sh-a-char.github.io/SHE/docs.html](https://ni-sh-a-char.github.io/SHE/docs.html)** —
 searchable, with runnable examples and a browser playground.
 
 This folder holds the parts that are easier to read next to the source.

@@ -537,7 +537,7 @@ def _help(interp, thing=None):
     """Describe a value, function, module or type."""
     if thing is None:
         interp.write("SHE — modules: " + ", ".join(module_names()) + "\n")
-        interp.write("Try help(math), or read the docs at https://she-lang.dev\n")
+        interp.write("Try help(math), or read the docs at https://ni-sh-a-char.github.io/SHE/\n")
         return None
     if isinstance(thing, Module):
         interp.write(f"module {thing.name}\n")
