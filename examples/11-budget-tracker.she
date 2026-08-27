@@ -1,0 +1,63 @@
+# Turn a CSV of expenses into a category summary and text bar chart.
+#
+#     she run examples/11-budget-tracker.she --allow-read=examples
+
+import csv
+import fs
+
+fun parse_expenses(text)
+  return csv.parse(text) |> map(fun(row) -> {
+    category: row.category,
+    item: row.item,
+    amount: number(row.amount),
+    })
+end
+
+fun totals_by_category(expenses)
+  var totals = {}
+  for each expense in expenses
+    totals[expense.category] = totals.get(expense.category, 0) + expense.amount
+  end
+  return totals
+end
+
+fun bar(value, largest, width = 24)
+  if largest is 0 then return ""
+  return "#".repeat(math.ceil(value / largest * width))
+end
+
+fun total_spent(expenses) -> expenses |> map(fun(expense) -> expense.amount) |> sum()
+
+let expenses = fs.read("examples/budget.csv") |> parse_expenses()
+let totals = totals_by_category(expenses)
+let largest = totals.values() |> max()
+
+say "monthly spending"
+for each category, amount in totals
+  say "  {category.pad_end(14)} {bar(amount, largest)} {amount}"
+end
+say "  {"total".pad_end(14)} {total_spent(expenses)}"
+
+test "parses CSV amounts as numbers"
+  let rows = parse_expenses("category,item,amount\nfood,lunch,12.50")
+  expect rows[0].category is "food"
+  expect rows[0].amount is 12.5
+end
+
+test "totals expenses by category"
+  let sample = [
+    {category: "food", item: "lunch", amount: 12},
+    {category: "travel", item: "train", amount: 20},
+    {category: "food", item: "coffee", amount: 3},
+  ]
+  let summary = totals_by_category(sample)
+  expect summary.food is 15
+  expect summary.travel is 20
+  expect total_spent(sample) is 35
+end
+
+test "scales bars against the largest category"
+  expect bar(20, 20, 10) is "##########"
+  expect bar(10, 20, 10) is "#####"
+  expect bar(0, 20, 10) is ""
+end
