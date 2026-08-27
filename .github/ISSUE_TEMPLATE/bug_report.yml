@@ -43,7 +43,7 @@ body:
     attributes:
       label: SHE version
       description: "`she --version`"
-      placeholder: SHE 2.0.0
+      placeholder: SHE 2.0.1
     validations:
       required: true
   - type: input

@@ -11,7 +11,7 @@ Public surface:
     format_source(text)   canonical formatting
 """
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __all__ = [
     "__version__", "run", "run_file", "Interpreter", "Sandbox", "Grant",
     "parse", "format_source", "SheError",

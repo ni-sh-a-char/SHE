@@ -1,3 +1,16 @@
+## SHE 2.0.1
+
+A metadata fix on top of 2.0.0. The language, standard library and sandbox are unchanged.
+
+The Buy Me a Coffee link used the wrong handle, which returned 404. PyPI releases are
+immutable, so the README on the 2.0.0 project page could not be corrected in place —
+this release exists to fix it. Tests now assert the funding link and the version agree
+everywhere, so neither can drift into a release again.
+
+Everything below describes SHE 2.0.
+
+---
+
 ## SHE 2.0
 
 A programming language that reads like English — and can't touch your machine unless you say so.

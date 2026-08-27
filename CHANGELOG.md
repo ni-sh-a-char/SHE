@@ -2,6 +2,25 @@
 
 All notable changes to SHE. This project follows [semantic versioning](https://semver.org).
 
+## [2.0.1] — 2026-08-27
+
+A metadata fix. No change to the language, the standard library or the sandbox.
+
+### Fixed
+
+- The Buy Me a Coffee link used the wrong handle
+  (`buymeacoffee.com/piyushmishra`, which returns 404). PyPI releases are
+  immutable, so the README shown on the 2.0.0 project page could not be
+  corrected in place — hence this release.
+- Added `.github/FUNDING.yml`, which is what renders the Sponsor button on the
+  repository and on every issue and pull request.
+
+### Added
+
+- Tests asserting the funding link is identical everywhere, and that the version
+  agrees across `she/__init__.py`, `pyproject.toml`, `she.toml` and the VS Code
+  extension — so neither can drift into a release again.
+
 ## [2.0.0] — 2026-08-27
 
 A complete rewrite. SHE 2.0 does not run SHE 1.0 programs; the old interpreter is
@@ -119,4 +138,5 @@ Defects carried over from 1.0, each now covered by a test:
 
 The original interpreter, kept on the `v1.0.0` branch for history. Unmaintained.
 
+[2.0.1]: https://github.com/ni-sh-a-char/SHE/releases/tag/v2.0.1
 [2.0.0]: https://github.com/ni-sh-a-char/SHE/releases/tag/v2.0.0

@@ -318,7 +318,7 @@ The VS Code extension in [`editors/vscode`](editors/vscode) gives syntax highlig
 
 ```sh
 cd editors/vscode && npm install && npm run package
-code --install-extension she-lang-2.0.0.vsix
+code --install-extension she-lang-2.0.1.vsix
 ```
 
 Any editor that speaks LSP can use `she lsp` directly.

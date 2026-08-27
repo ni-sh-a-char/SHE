@@ -7,6 +7,7 @@ every rule it applies is pinned here.
 import io
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -315,3 +316,44 @@ def test_lsp_completes_module_members():
     labels = [item["label"] for item in completion["result"]["items"]]
     assert "sqrt" in labels
     assert "median" in labels
+
+
+# --- packaging metadata -----------------------------------------------------
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FUNDING = "https://buymeacoffee.com/piyushmishra00"
+
+
+def read(*parts):
+    with open(os.path.join(REPO, *parts), encoding="utf-8") as handle:
+        return handle.read()
+
+
+def test_the_funding_link_is_the_same_everywhere():
+    """A wrong handle shipped to PyPI once, where releases are immutable and the
+    only fix is a new version. Every copy of the link is checked here now."""
+    wrong = []
+    for name in ("README.md", "pyproject.toml", "CONTRIBUTING.md",
+                 "docs/README.md", ".github/FUNDING.yml", ".github/release-notes.md",
+                 "site/index.html", "site/docs.html", "site/playground.html"):
+        text = read(*name.split("/"))
+        for found in re.findall(r"https://buymeacoffee\.com/[A-Za-z0-9_-]+", text):
+            if found != FUNDING:
+                wrong.append(f"{name}: {found}")
+    assert not wrong, "these point at the wrong Buy Me a Coffee handle: " + "; ".join(wrong)
+
+
+def test_the_readme_pypi_will_show_has_a_working_funding_link():
+    """pyproject points long_description at README.md, so this is the text that
+    ends up on the PyPI project page."""
+    readme = read("README.md")
+    assert FUNDING in readme
+    assert 'readme = "README.md"' in read("pyproject.toml")
+
+
+def test_the_version_is_the_same_everywhere():
+    import she
+    version = she.__version__
+    assert f'version = "{version}"' in read("pyproject.toml")
+    assert f'version = "{version}"' in read("she.toml")
+    assert f'"version": "{version}"' in read("editors", "vscode", "package.json")
