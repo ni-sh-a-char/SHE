@@ -1,0 +1,72 @@
+# Lists, maps, and the pipeline operator.
+
+# --- lists --------------------------------------------------------------
+let numbers = [4, 8, 15, 16, 23, 42]
+
+say numbers[0]  # first
+say numbers[-1]  # last
+say numbers[1:3]  # a slice
+say numbers.length
+
+say numbers.sort()
+say numbers.reverse()
+say numbers.sum()
+say numbers.average()
+
+# `|>` sends the value on the left into the function on the right.
+# Read it left to right, like a sentence.
+say numbers
+  |> filter(fun(n) -> n % 2 is 0)
+  |> map(fun(n) -> n / 2)
+  |> sum()
+
+# The same thing written the other way round.
+say sum(map(filter(numbers, fun(n) -> n % 2 is 0), fun(n) -> n / 2))
+
+# --- maps ---------------------------------------------------------------
+let person = {
+  name: "Ada Lovelace",
+  born: 1815,
+  fields: ["mathematics", "computing"],
+}
+
+say person.name
+say person["born"]
+say person.keys()
+say person.get("email", "not given")
+
+# Maps are easy to build up.
+var tally = {}
+for each word in "the cat sat on the mat".split(" ")
+  tally[word] = tally.get(word, 0) + 1
+end
+say tally
+
+# --- text ---------------------------------------------------------------
+let sentence = "  The Quick Brown Fox  "
+
+say sentence.trim().lower()
+say sentence.trim().split(" ")
+say sentence.trim().slug()
+say "hi ".repeat(3)
+say "hello".reverse()
+say "Hello, World".replace("World", "SHE")
+
+# --- taking things apart ------------------------------------------------
+let [first, second, ...rest] = numbers
+say "first {first}, second {second}, then {rest}"
+
+let point = {x: 3, y: 4}
+say "{point.x},{point.y}"
+
+# --- grouping -----------------------------------------------------------
+let people = [
+  {name: "Ada", city: "London"},
+  {name: "Alan", city: "London"},
+  {name: "Grace", city: "New York"},
+]
+
+let by_city = people |> list.group_by(fun(p) -> p.city)
+for each city, residents in by_city
+  say "{city}: {residents |> map(fun(p) -> p.name) |> text.join(", ")}"
+end

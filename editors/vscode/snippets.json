@@ -1,0 +1,100 @@
+{
+  "function": {
+    "prefix": "fun",
+    "body": ["fun ${1:name}(${2:arguments})", "  $0", "end"],
+    "description": "A function with a body"
+  },
+  "arrow function": {
+    "prefix": "funx",
+    "body": ["fun ${1:name}(${2:arguments}) -> $0"],
+    "description": "A one-expression function"
+  },
+  "if": {
+    "prefix": "if",
+    "body": ["if ${1:condition}", "  $0", "end"],
+    "description": "if"
+  },
+  "if else": {
+    "prefix": "ifelse",
+    "body": ["if ${1:condition}", "  $2", "else", "  $0", "end"],
+    "description": "if / else"
+  },
+  "for each": {
+    "prefix": "for",
+    "body": ["for each ${1:item} in ${2:items}", "  $0", "end"],
+    "description": "Loop over every item"
+  },
+  "for range": {
+    "prefix": "forn",
+    "body": ["for each ${1:n} in ${2:1}..${3:10}", "  $0", "end"],
+    "description": "Loop over a range"
+  },
+  "while": {
+    "prefix": "while",
+    "body": ["while ${1:condition}", "  $0", "end"],
+    "description": "while"
+  },
+  "repeat until": {
+    "prefix": "repeat",
+    "body": ["repeat", "  $0", "until ${1:condition}"],
+    "description": "Repeat at least once"
+  },
+  "type": {
+    "prefix": "type",
+    "body": [
+      "type ${1:Name} has ${2:field}",
+      "  \"${3:What this is.}\"",
+      "",
+      "  fun ${4:method}(self) -> $0",
+      "end"
+    ],
+    "description": "A type with a method"
+  },
+  "match": {
+    "prefix": "match",
+    "body": [
+      "match ${1:value}",
+      "  case ${2:pattern} -> $3",
+      "  case _ -> $0",
+      "end"
+    ],
+    "description": "Choose a branch by shape"
+  },
+  "try": {
+    "prefix": "try",
+    "body": ["try", "  $1", "catch e", "  say \"${2:something went wrong}: {e.message}\"", "end"],
+    "description": "try / catch"
+  },
+  "try finally": {
+    "prefix": "tryf",
+    "body": ["try", "  $1", "catch e", "  $2", "finally", "  $0", "end"],
+    "description": "try / catch / finally"
+  },
+  "test": {
+    "prefix": "test",
+    "body": ["test \"${1:what it should do}\"", "  expect ${2:value} is ${3:expected}", "end"],
+    "description": "A test block"
+  },
+  "say": { "prefix": "say", "body": ["say \"$0\""], "description": "Print something" },
+  "ask": {
+    "prefix": "ask",
+    "body": ["let ${1:answer} = ask \"${2:What is your name?}\""],
+    "description": "Read a line of input"
+  },
+  "pipeline": {
+    "prefix": "pipe",
+    "body": ["${1:values}", "  |> filter(fun(${2:n}) -> $3)", "  |> map(fun(${2:n}) -> $4)", "  |> $0"],
+    "description": "A pipeline"
+  },
+  "async": {
+    "prefix": "async",
+    "body": ["async fun ${1:name}(${2:arguments})", "  $0", "end"],
+    "description": "A function that runs on its own thread"
+  },
+  "import": { "prefix": "import", "body": ["import ${1:math}"], "description": "Bring in a module" },
+  "use": {
+    "prefix": "use",
+    "body": ["use \"./${1:helpers}.she\" as ${1:helpers}"],
+    "description": "Bring in another file"
+  }
+}

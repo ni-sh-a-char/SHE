@@ -1,0 +1,55 @@
+name: Bug report
+description: Something in SHE does not behave the way it should
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. A three-line program that shows the problem is worth
+        more than three paragraphs describing it.
+  - type: textarea
+    id: program
+    attributes:
+      label: The smallest program that shows it
+      render: she
+      placeholder: |
+        let xs = [1, 2]
+        say xs[5]
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: How you ran it
+      placeholder: she run bug.she --allow-read=.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead
+      description: Paste the full output, including any error.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: SHE version
+      description: "`she --version`"
+      placeholder: SHE 2.0.0
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version and operating system
+      placeholder: Python 3.12 on macOS 14
+    validations:
+      required: true

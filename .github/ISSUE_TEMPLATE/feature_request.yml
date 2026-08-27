@@ -1,0 +1,32 @@
+name: Feature request
+description: Suggest something SHE should be able to do
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: Describe the problem, not the solution. What is awkward today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would it look like in SHE?
+      render: she
+      description: Write the code as you wish you could write it.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: How do you do it today?
+      description: What is the workaround, and why is it not good enough?
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you post
+      options:
+        - label: I checked the [docs](https://she-lang.dev/docs) and this is not already possible
+          required: true
+        - label: This reads like English and does not need a lot of syntax

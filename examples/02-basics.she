@@ -1,0 +1,80 @@
+# Everything you need for a first program.
+
+# --- deciding -----------------------------------------------------------
+let age = 19
+
+if age >= 18
+  say "you can vote"
+else if age >= 16
+  say "nearly there"
+else
+  say "not yet"
+end
+
+# One-liners fit on one line.
+if age is 19 then say "nineteen exactly"
+
+# `if` also works as a value.
+let price = if age >= 18 then 40 else 20
+say "ticket: {price}"
+
+# --- repeating ----------------------------------------------------------
+for each n in 1..5
+  say "{n} squared is {n ^ 2}"
+end
+
+for each n in 0..10 by 5
+  say n
+end
+
+let shopping = ["bread", "milk", "eggs"]
+for each i, item in shopping
+  say "{i + 1}. {item}"
+end
+
+var countdown = 3
+while countdown > 0
+  say countdown
+  countdown -= 1
+end
+say "go!"
+
+# `repeat` always runs at least once.
+var tries = 0
+repeat
+  tries += 1
+until tries >= 3
+say "tried {tries} times"
+
+# `skip` moves to the next turn, `break` leaves the loop.
+for each n in 1..10
+  if n % 3 is not 0 then skip
+  if n > 6 then break
+  say "{n} divides by three"
+end
+
+# --- functions ----------------------------------------------------------
+fun greet(who = "world") -> "Hello, {who}!"
+
+say greet()
+say greet("SHE")
+
+fun classify(n)
+  if n < 0 then return "negative"
+  if n is 0 then return "zero"
+  return "positive"
+end
+
+say classify(-4), classify(0), classify(9)
+
+# Functions are values.
+let double = fun(n) -> n * 2
+say double(21)
+
+# A function can take as many values as you like.
+fun total(...numbers) -> sum(numbers)
+say total(1, 2, 3, 4)
+
+# Name your arguments when it reads better.
+fun rectangle(width, height) -> width * height
+say rectangle(height: 3, width: 4)

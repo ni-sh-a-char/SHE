@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "she-*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: py${{ matrix.python }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.9", "3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,all]"
+
+      - name: Python test suite
+        run: pytest -q
+
+      - name: SHE runs its own examples
+        shell: bash
+        run: |
+          for file in examples/*.she; do
+            echo "--- $file"
+            she run "$file" --allow-read=. --allow-time || exit 1
+          done
+
+      - name: SHE test suite
+        run: she test examples --allow-read=. --allow-time
+
+      - name: Code is formatted
+        run: she fmt examples --check
+
+      - name: Programs parse cleanly
+        run: she check examples
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check she tools
+
+  sandbox:
+    name: the sandbox actually holds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: A program with no grants cannot reach outside
+        run: python tools/check_sandbox.py
+
+  package:
+    name: package builds and installs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build
+      - run: python -m build
+      - run: pip install dist/*.whl
+      - run: she --version
+      - run: echo 'say "packaged"' > /tmp/p.she && she run /tmp/p.she
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/

@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "she-lang"
+version = "2.0.0"
+description = "A programming language that reads like English, with permissions built in."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+license-files = ["LICENCE"]
+authors = [{ name = "Piyush Mishra", email = "dev@gratefulworldventures.in" }]
+keywords = [
+    "programming-language", "interpreter", "beginner-friendly", "education",
+    "scripting", "sandbox", "capability-security", "kaalka", "webweavex",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Compilers",
+    "Topic :: Software Development :: Interpreters",
+    "Topic :: Education",
+]
+dependencies = []
+
+[project.optional-dependencies]
+crypto = ["kaalka>=5.0.0"]
+web = ["webweavex>=3.0.0"]
+all = ["kaalka>=5.0.0", "webweavex>=3.0.0"]
+dev = ["pytest>=7", "ruff>=0.4", "build>=1.0"]
+
+[project.urls]
+Homepage = "https://she-lang.dev"
+Documentation = "https://she-lang.dev/docs"
+Repository = "https://github.com/ni-sh-a-char/SHE"
+Issues = "https://github.com/ni-sh-a-char/SHE/issues"
+Changelog = "https://github.com/ni-sh-a-char/SHE/blob/main/CHANGELOG.md"
+Funding = "https://buymeacoffee.com/piyushmishra"
+
+[project.scripts]
+she = "she.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["she*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4"]
+ignore = [
+    "E501",   # line length is handled by the 100-column setting above
+    "B008",   # stdlib modules build their exports with calls in defaults
+    "C401",
+    # B904 (raise ... from) is deliberate. SHE translates host exceptions into
+    # its own error types on purpose: a Python traceback must never reach
+    # someone writing SHE, so the chain is dropped rather than carried.
+    "B904",
+]

@@ -1,0 +1,55 @@
+# Turning software into a graph you can query, with WebWeaveX.
+#
+# Reading a local folder needs --allow-read; reaching a site needs --allow-net:
+#
+#     she run examples/08-web-graphs.she --allow-read=.
+#     she run examples/08-web-graphs.she --allow-net=example.com
+#
+# WebWeaveX extracts a live app, a repository or a document into a
+# deterministic graph: the same input always produces the same fingerprint,
+# so you can diff two runs and see exactly what changed.
+
+import web
+
+say "WebWeaveX {web.version()}"
+
+# --- fingerprints are deterministic -------------------------------------
+# The same payload always gives the same identity. That is what makes a
+# graph comparable between two runs, two machines, or two points in time.
+
+let payload = {service: "billing", version: "2.4.1", routes: ["/pay", "/refund"]}
+
+let once = web.fingerprint(payload)
+let twice = web.fingerprint(payload)
+
+say ""
+say "fingerprinting"
+say "  identity         {once[0:24]}..."
+say "  stable?          {once is twice}"
+
+let changed = payload.merge({version: "2.4.2"})
+say "  after a change   {web.fingerprint(changed) is once}"
+
+# --- extracting a real source -------------------------------------------
+fun try_extract(label, action)
+  try
+    let result = action()
+    say "  {label}"
+    say "    nodes          {web.nodes(result).length}"
+    say "    edges          {web.edges(result).length}"
+  catch e: PermissionError
+    say "  {label} — needs a permission: {e.hint}"
+  catch e
+    say "  {label} — not available: {e.message}"
+  end
+end
+
+say ""
+say "extraction"
+try_extract("this folder", fun() -> web.repo("."))
+try_extract("a live page", fun() -> web.extract("https://example.com", "web"))
+
+say ""
+say "Every graph carries a Kaalka-backed content hash, so two extractions"
+say "of the same thing agree bit for bit:"
+say "  {web.kaalka_hash(payload)[0:32]}..."

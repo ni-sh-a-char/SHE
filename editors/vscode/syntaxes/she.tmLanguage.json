@@ -1,0 +1,155 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "SHE",
+  "scopeName": "source.she",
+  "patterns": [
+    { "include": "#comment-block" },
+    { "include": "#comment" },
+    { "include": "#text-triple" },
+    { "include": "#text-raw" },
+    { "include": "#text" },
+    { "include": "#number" },
+    { "include": "#declaration" },
+    { "include": "#definition" },
+    { "include": "#keyword" },
+    { "include": "#constant" },
+    { "include": "#builtin-type" },
+    { "include": "#module" },
+    { "include": "#call" },
+    { "include": "#operator" }
+  ],
+  "repository": {
+    "comment-block": {
+      "name": "comment.block.she",
+      "begin": "#-",
+      "end": "-#"
+    },
+    "comment": {
+      "name": "comment.line.number-sign.she",
+      "match": "#.*$"
+    },
+    "text-triple": {
+      "name": "string.quoted.triple.she",
+      "begin": "\"\"\"",
+      "end": "\"\"\"",
+      "patterns": [{ "include": "#interpolation" }, { "include": "#escape" }]
+    },
+    "text-raw": {
+      "name": "string.quoted.other.raw.she",
+      "begin": "r([\"'])",
+      "end": "\\1"
+    },
+    "text": {
+      "name": "string.quoted.double.she",
+      "begin": "([\"'])",
+      "end": "\\1",
+      "patterns": [{ "include": "#interpolation" }, { "include": "#escape" }]
+    },
+    "interpolation": {
+      "name": "meta.embedded.she",
+      "begin": "(?<!\\{)\\{(?!\\{)",
+      "end": "\\}",
+      "beginCaptures": { "0": { "name": "punctuation.definition.template-expression.she" } },
+      "endCaptures": { "0": { "name": "punctuation.definition.template-expression.she" } },
+      "patterns": [
+        { "include": "#text" },
+        { "include": "#number" },
+        { "include": "#keyword" },
+        { "include": "#call" },
+        { "include": "#operator" }
+      ]
+    },
+    "escape": {
+      "name": "constant.character.escape.she",
+      "match": "\\\\(n|t|r|0|e|\\\\|\"|'|\\{|\\})"
+    },
+    "number": {
+      "name": "constant.numeric.she",
+      "match": "\\b(0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|[0-9][0-9_]*(\\.[0-9_]+)?([eE][+-]?[0-9]+)?)\\b"
+    },
+    "declaration": {
+      "match": "\\b(let|var)\\s+([A-Za-z_][A-Za-z0-9_]*\\??)",
+      "captures": {
+        "1": { "name": "storage.type.she" },
+        "2": { "name": "variable.other.she" }
+      }
+    },
+    "definition": {
+      "patterns": [
+        {
+          "match": "\\b(async\\s+)?(fun)\\s+([A-Za-z_][A-Za-z0-9_]*\\??)",
+          "captures": {
+            "1": { "name": "storage.modifier.she" },
+            "2": { "name": "storage.type.function.she" },
+            "3": { "name": "entity.name.function.she" }
+          }
+        },
+        {
+          "match": "\\b(type)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": { "name": "storage.type.she" },
+            "2": { "name": "entity.name.type.she" }
+          }
+        },
+        {
+          "match": "\\b(test)\\s+(?=[\"'])",
+          "captures": { "1": { "name": "keyword.other.test.she" } }
+        }
+      ]
+    },
+    "keyword": {
+      "patterns": [
+        {
+          "name": "keyword.control.she",
+          "match": "\\b(if|then|else|end|for|each|in|by|while|repeat|until|break|skip|return|match|case|try|catch|finally|throw|do)\\b"
+        },
+        {
+          "name": "keyword.other.she",
+          "match": "\\b(let|var|fun|type|has|from|import|use|as|test|expect|assert|say|ask|async|await)\\b"
+        },
+        {
+          "name": "keyword.operator.word.she",
+          "match": "\\b(and|or|not|is|is\\s+not|in|not\\s+in)\\b"
+        }
+      ]
+    },
+    "constant": {
+      "name": "constant.language.she",
+      "match": "\\b(true|false|nothing|infinity|nan)\\b"
+    },
+    "builtin-type": {
+      "name": "support.type.she",
+      "match": "\\b(number|text|bool|list|map|range|function|error|task|any)\\b(?=\\s*[,)\\]|=]|\\s*$|\\s*\\()"
+    },
+    "module": {
+      "match": "\\b(text|list|maps|math|json|re|time|random|csv|crypto|fs|http|os|web)\\s*(\\.)",
+      "captures": {
+        "1": { "name": "support.class.she" },
+        "2": { "name": "punctuation.accessor.she" }
+      }
+    },
+    "call": {
+      "patterns": [
+        {
+          "match": "\\b([A-Z][A-Za-z0-9_]*)\\s*(?=\\()",
+          "name": "entity.name.type.she"
+        },
+        {
+          "match": "\\b([a-z_][A-Za-z0-9_]*\\??)\\s*(?=\\()",
+          "name": "entity.name.function.she"
+        },
+        {
+          "match": "(\\.)([A-Za-z_][A-Za-z0-9_]*\\??)\\s*(?=\\()",
+          "captures": {
+            "1": { "name": "punctuation.accessor.she" },
+            "2": { "name": "entity.name.function.member.she" }
+          }
+        }
+      ]
+    },
+    "operator": {
+      "name": "keyword.operator.she",
+      "match": "(\\|>|\\?\\?=|\\?\\?|\\?\\.|->|=>|\\.\\.<|\\.\\.|==|!=|<=|>=|\\+=|-=|\\*=|/=|//=|%=|\\^=|[+\\-*/%^<>=])"
+    }
+  }
+}

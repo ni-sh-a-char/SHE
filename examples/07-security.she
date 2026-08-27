@@ -1,0 +1,69 @@
+# Security work, using the two halves of the `crypto` module.
+#
+#   she run examples/07-security.she
+#
+# Nothing here needs a permission — it is all pure computation.
+
+import crypto
+
+# --- part one: standard primitives --------------------------------------
+# These wrap Python's hashlib, hmac and secrets. Use them for anything real.
+
+say "fingerprints"
+say "  sha256 of 'she'  {crypto.hash("she")}"
+say "  short form       {crypto.hash("she")[0:16]}"
+say "  keyed (hmac)     {crypto.hmac("payload", "shared-key")[0:16]}"
+
+say ""
+say "storing a password"
+let stored = crypto.password_hash("correct horse battery staple")
+say "  stored as        {stored[0:38]}..."
+say "  right password   {crypto.password_check("correct horse battery staple", stored)}"
+say "  wrong password   {crypto.password_check("hunter2", stored)}"
+
+say ""
+say "tokens and comparison"
+say "  session token    {crypto.token(24)}"
+say "  random bytes     {crypto.random_bytes(8)}"
+say "  timing-safe eq   {crypto.compare("abc", "abc")}"
+
+# --- part two: Kaalka, the time-keyed cipher -----------------------------
+# Kaalka derives its key from a moment in time. It is a novel construction
+# and has not been through public cryptanalysis, so reach for it for
+# time-keyed handoff, puzzles and teaching — not to protect secrets that
+# matter. The primitives above are the ones for that.
+
+say ""
+say "Kaalka: encryption keyed by a moment in time"
+
+let moment = "14:35:22"
+let secret = crypto.kaalka_encrypt("meet at the bridge", moment)
+say "  same moment      {crypto.kaalka_decrypt(secret, moment)}"
+say "  different moment {crypto.kaalka_decrypt(secret, "09:00:00")}"
+
+# Raw Kaalka output holds characters that do not survive a file, a URL or a
+# JSON field. `seal` and `open` armour it so the ciphertext can travel.
+let sealed = crypto.seal("travels safely", moment)
+say "  sealed           {sealed}"
+say "  opened           {crypto.open(sealed, moment)}"
+
+# An envelope adds who it is from, who it is for, and a checksum.
+say ""
+say "envelopes"
+let packet = crypto.envelope("the eagle has landed", "ada", "bob", moment)
+say "  from             {packet.from}"
+say "  to               {packet.to}"
+say "  bob reads it     {crypto.open_envelope(packet, "bob")}"
+
+try
+  say crypto.open_envelope(packet, "eve")
+catch e
+  say "  eve cannot       {e.message}"
+end
+
+var tampered = packet.merge({body: crypto.seal("send money instead", moment)})
+try
+  say crypto.open_envelope(tampered, "bob")
+catch e
+  say "  tampering caught {e.message}"
+end

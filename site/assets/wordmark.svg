@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 128" width="420" height="128" role="img" aria-label="SHE — a language that reads like English">
+  <title>SHE</title>
+  <defs>
+    <linearGradient id="wm-badge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="52%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="wm-text" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(0,0)">
+    <rect x="4" y="4" width="120" height="120" rx="30" fill="url(#wm-badge)"/>
+    <g stroke="#ffffff" stroke-opacity=".38" stroke-width="3" stroke-linecap="round">
+      <line x1="64" y1="16" x2="64" y2="23"/>
+      <line x1="112" y1="64" x2="105" y2="64"/>
+      <line x1="64" y1="112" x2="64" y2="105"/>
+      <line x1="16" y1="64" x2="23" y2="64"/>
+    </g>
+    <path d="M84 44c0-9-8-15-20-15s-20 6-20 14c0 18 40 8 40 26 0 9-9 15-21 15s-21-6-21-15"
+          fill="none" stroke="#ffffff" stroke-width="11" stroke-linecap="round"/>
+    <rect x="86" y="79" width="9" height="9" rx="2.5" fill="#ffffff"/>
+  </g>
+
+  <text x="146" y="76" font-family="Georgia, 'Times New Roman', serif"
+        font-size="62" font-weight="700" letter-spacing="6" fill="url(#wm-text)">SHE</text>
+  <text x="149" y="102" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace"
+        font-size="14.5" letter-spacing="1.4" fill="currentColor" opacity=".62">reads like English</text>
+</svg>

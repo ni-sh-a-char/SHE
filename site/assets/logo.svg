@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="SHE programming language logo">
+  <title>SHE</title>
+  <defs>
+    <linearGradient id="she-badge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="52%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="she-shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".22"/>
+      <stop offset="60%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- badge -->
+  <rect x="4" y="4" width="120" height="120" rx="30" fill="url(#she-badge)"/>
+  <rect x="4" y="4" width="120" height="120" rx="30" fill="url(#she-shine)"/>
+
+  <!-- the ring of hour ticks: a nod to Kaalka, whose key is a moment in time -->
+  <g stroke="#ffffff" stroke-opacity=".38" stroke-width="3" stroke-linecap="round">
+    <line x1="64" y1="16" x2="64" y2="23"/>
+    <line x1="112" y1="64" x2="105" y2="64"/>
+    <line x1="64" y1="112" x2="64" y2="105"/>
+    <line x1="16" y1="64" x2="23" y2="64"/>
+  </g>
+  <g stroke="#ffffff" stroke-opacity=".2" stroke-width="2.5" stroke-linecap="round">
+    <line x1="98" y1="30" x2="93.5" y2="34.5"/>
+    <line x1="98" y1="98" x2="93.5" y2="93.5"/>
+    <line x1="30" y1="98" x2="34.5" y2="93.5"/>
+    <line x1="30" y1="30" x2="34.5" y2="34.5"/>
+  </g>
+
+  <!-- the S: two arcs, drawn like a prompt sweeping across the screen -->
+  <path d="M84 44c0-9-8-15-20-15s-20 6-20 14c0 18 40 8 40 26 0 9-9 15-21 15s-21-6-21-15"
+        fill="none" stroke="#ffffff" stroke-width="11" stroke-linecap="round"/>
+
+  <!-- the cursor: SHE is a language you talk to -->
+  <rect x="86" y="79" width="9" height="9" rx="2.5" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Ask a question
+    url: https://github.com/ni-sh-a-char/SHE/discussions
+    about: Questions, ideas and showing off what you built
+  - name: Report a security issue
+    url: https://github.com/ni-sh-a-char/SHE/security/advisories/new
+    about: Sandbox escapes and other vulnerabilities — please do not open a public issue
+  - name: Documentation
+    url: https://she-lang.dev/docs
+    about: The full language reference

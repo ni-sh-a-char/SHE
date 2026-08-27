@@ -1,0 +1,73 @@
+# Tests live next to the code they check.
+#
+#     she test examples/10-testing-and-tasks.she
+
+fun celsius_to_fahrenheit(c) -> c * 9 / 5 + 32
+
+fun initials(name)
+  return name.trim().split(" ")
+    |> filter(fun(part) -> not part.empty?())
+    |> map(fun(part) -> part.at(0).upper())
+    |> text.join(".")
+end
+
+fun safe_divide(a, b)
+  if b is 0 then throw error("MathError", "cannot divide by zero")
+  return a / b
+end
+
+# --- tests ---------------------------------------------------------------
+
+test "converts freezing and boiling"
+  expect celsius_to_fahrenheit(0) is 32
+  expect celsius_to_fahrenheit(100) is 212
+end
+
+test "handles negative temperatures"
+  expect celsius_to_fahrenheit(-40) is -40
+end
+
+test "builds initials from a name"
+  expect initials("Ada Lovelace") is "A.L"
+  expect initials("  grace  brewster  hopper ") is "G.B.H"
+end
+
+test "dividing by zero is refused"
+  try
+    safe_divide(1, 0)
+    expect false, "it should have thrown"
+  catch e
+    expect e.kind is "MathError"
+  end
+end
+
+test "comparisons other than equality"
+  expect 10 > 3
+  expect "apple" < "banana"
+  expect 3 in [1, 2, 3]
+  expect initials("Ada Lovelace").length is 3
+end
+
+# --- doing several things at once ----------------------------------------
+# `async fun` runs on its own thread. Calling it hands back a task; `await`
+# waits for the answer. Useful when the slow part is waiting on the world.
+
+async fun measure(name, size)
+  var total = 0
+  for each n in 1..size
+    total += n
+  end
+  return {name: name, total: total}
+end
+
+let jobs = [measure("small", 1000), measure("medium", 10000), measure("large", 100000)]
+
+say "started {jobs.length} tasks"
+for each done in await jobs
+  say "  {done.name}: {done.total}"
+end
+
+test "tasks give the same answers as doing it in order"
+  let task = measure("check", 10)
+  expect (await task).total is 55
+end

@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SHE documentation</title>
+<meta name="description" content="The complete SHE language reference: syntax, types, pattern matching, permissions, the standard library and the command line.">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="aurora"><i></i><i></i></div>
+
+<header class="top">
+  <div class="shell">
+    <a class="brand" href="./"><img src="assets/logo.svg" alt=""><span>SHE</span></a>
+    <nav>
+      <a href="./#tour" class="hide-sm">Tour</a>
+      <a href="./#playground">Playground</a>
+      <a href="docs.html" style="color:var(--violet)">Docs</a>
+      <a href="https://github.com/ni-sh-a-char/SHE" class="hide-sm">GitHub</a>
+      <a href="https://buymeacoffee.com/piyushmishra" class="btn btn-coffee hide-sm"
+         style="padding:7px 14px;font-size:13.5px">☕ Support</a>
+      <button class="icon-btn" id="theme" aria-label="Switch theme">◐</button>
+    </nav>
+  </div>
+</header>
+
+<div class="shell" style="padding-top:36px">
+<div class="docs-shell">
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="docs-nav">
+  <input class="docs-search" id="search" type="search" placeholder="Search the docs…" aria-label="Search">
+
+  <h4>Getting started</h4>
+  <a href="#install">Install</a>
+  <a href="#first">Your first program</a>
+  <a href="#cli">The command line</a>
+
+  <h4>The language</h4>
+  <a href="#values">Values</a>
+  <a href="#text">Text</a>
+  <a href="#names">Names</a>
+  <a href="#operators">Operators</a>
+  <a href="#control">Control flow</a>
+  <a href="#collections">Lists and maps</a>
+  <a href="#functions">Functions</a>
+  <a href="#types">Types</a>
+  <a href="#matching">Pattern matching</a>
+  <a href="#errors">Errors</a>
+  <a href="#typing">Gradual typing</a>
+  <a href="#async">Doing things at once</a>
+  <a href="#modules">Modules</a>
+  <a href="#testing">Testing</a>
+
+  <h4>Security</h4>
+  <a href="#permissions">Permissions</a>
+  <a href="#limits">Budgets and limits</a>
+  <a href="#untrusted">Running untrusted code</a>
+
+  <h4>Standard library</h4>
+  <a href="#stdlib">Overview</a>
+  <a href="#lib-core">core</a>
+  <a href="#lib-text">text</a>
+  <a href="#lib-list">list</a>
+  <a href="#lib-maps">maps</a>
+  <a href="#lib-math">math</a>
+  <a href="#lib-json">json &amp; csv</a>
+  <a href="#lib-re">re</a>
+  <a href="#lib-time">time &amp; random</a>
+  <a href="#lib-fs">fs</a>
+  <a href="#lib-http">http &amp; os</a>
+  <a href="#lib-crypto">crypto</a>
+  <a href="#lib-web">web</a>
+
+  <h4>Reference</h4>
+  <a href="#grammar">Grammar</a>
+  <a href="#embedding">Embedding SHE</a>
+  <a href="#editors">Editor support</a>
+  <a href="#migrating">Coming from v1</a>
+</aside>
+
+<!-- ================= BODY ================= -->
+<main class="docs-body">
+
+<h1 style="font-size:44px;margin-bottom:8px">Documentation</h1>
+<p class="lede" style="margin-bottom:8px">
+  Everything SHE does, in the order you are likely to need it. Every snippet on this page
+  runs as written — paste any of them into the <a href="./#playground">playground</a>.
+</p>
+
+<!-- ---------- GETTING STARTED ---------- -->
+<section id="install">
+<h2>Install</h2>
+<pre><code>pip install she-lang</code></pre>
+<p>That is the whole installation. SHE has no dependencies of its own — if you have Python 3.9 or newer, you have everything it needs.</p>
+<p>Two optional extras add modules that wrap outside libraries:</p>
+<pre><code>pip install "she-lang[crypto]"   <span class="t-com"># Kaalka, for the crypto module</span>
+pip install "she-lang[web]"      <span class="t-com"># WebWeaveX, for the web module</span>
+pip install "she-lang[all]"      <span class="t-com"># both</span></code></pre>
+<div class="callout">
+  <b>Nothing else is required.</b> The rest of the standard library — text, lists, maps,
+  maths, JSON, patterns, time, files, HTTP, hashing — is built on Python's own standard
+  library and works out of the box.
+</div>
+</section>
+
+<section id="first">
+<h2>Your first program</h2>
+<p>Put this in a file called <code>hello.she</code>:</p>
+<pre><code><span class="t-key">let</span> name <span class="t-op">=</span> <span class="t-key">ask</span> <span class="t-str">"What is your name?"</span>
+<span class="t-key">say</span> <span class="t-str">"Hello, {name}!"</span></code></pre>
+<p>Then run it:</p>
+<pre><code>she run hello.she</code></pre>
+<p>Or start a new project with a layout, a test and a readme already in place:</p>
+<pre><code>she new my-project
+cd my-project
+she run main.she</code></pre>
+</section>
+
+<section id="cli">
+<h2>The command line</h2>
+<table>
+<tr><th>Command</th><th>What it does</th></tr>
+<tr><td><code>she</code></td><td>Interactive prompt. Values print themselves, so typing <code>1 + 1</code> shows <code>2</code>.</td></tr>
+<tr><td><code>she run file.she</code></td><td>Run a program. <code>she file.she</code> works too.</td></tr>
+<tr><td><code>she test [path]</code></td><td>Run every <code>test "..."</code> block found.</td></tr>
+<tr><td><code>she fmt [path]</code></td><td>Format code. <code>--check</code> reports without changing anything.</td></tr>
+<tr><td><code>she check file.she</code></td><td>Look for problems without running.</td></tr>
+<tr><td><code>she new name</code></td><td>Scaffold a project.</td></tr>
+<tr><td><code>she doc [module]</code></td><td>What a module provides, in the terminal.</td></tr>
+<tr><td><code>she lsp</code></td><td>Language server, for editors.</td></tr>
+</table>
+
+<h3>At the interactive prompt</h3>
+<table>
+<tr><th>Command</th><th>What it does</th></tr>
+<tr><td><code>:help</code></td><td>The list of commands</td></tr>
+<tr><td><code>:env</code></td><td>What you have defined so far</td></tr>
+<tr><td><code>:type expr</code></td><td>What kind of value something is</td></tr>
+<tr><td><code>:time expr</code></td><td>Run something and report how long it took</td></tr>
+<tr><td><code>:load file.she</code></td><td>Run a file into the current session</td></tr>
+<tr><td><code>:perms</code> / <code>:grant read</code></td><td>See and change what this session may do</td></tr>
+<tr><td><code>:quit</code></td><td>Leave</td></tr>
+</table>
+</section>
+
+<!-- ---------- LANGUAGE ---------- -->
+<section id="values">
+<h2>Values</h2>
+<p>SHE has seven kinds of value, plus whatever types you define.</p>
+<table>
+<tr><th>Kind</th><th>Examples</th></tr>
+<tr><td><code>number</code></td><td><code>42</code>, <code>3.14</code>, <code>1_000_000</code>, <code>0xff</code>, <code>0b1010</code>, <code>1.5e3</code></td></tr>
+<tr><td><code>text</code></td><td><code>"hello"</code>, <code>'also hello'</code>, <code>"""a block"""</code>, <code>r"raw\n"</code></td></tr>
+<tr><td><code>bool</code></td><td><code>true</code>, <code>false</code></td></tr>
+<tr><td><code>nothing</code></td><td><code>nothing</code></td></tr>
+<tr><td><code>list</code></td><td><code>[1, 2, 3]</code>, <code>[]</code>, <code>["a", [1, 2], {x: 1}]</code></td></tr>
+<tr><td><code>map</code></td><td><code>{name: "Ada", age: 36}</code>, <code>{}</code></td></tr>
+<tr><td><code>range</code></td><td><code>1..10</code> (both ends), <code>1..&lt;10</code> (stops before 10)</td></tr>
+</table>
+<p><code>type_of(value)</code> tells you which one you have.</p>
+
+<h3>Truthiness</h3>
+<p>In an <code>if</code> or a <code>while</code>, these count as false: <code>false</code>, <code>nothing</code>, <code>0</code>, empty text, an empty list, an empty map. Everything else is true.</p>
+<div class="callout">
+  <b><code>true</code> is not <code>1</code>.</b> Booleans are their own kind of value, so
+  <code>true is 1</code> is <code>false</code> and <code>nothing is 0</code> is <code>false</code>.
+  If you want a number, ask for one: <code>to_number(true)</code>.
+</div>
+
+<h3>Whole numbers stay whole</h3>
+<p><code>10 / 2</code> prints <code>5</code>, not <code>5.0</code>. When a division comes out even, you get a whole number back.</p>
+</section>
+
+<section id="text">
+<h2>Text</h2>
+<p>Any value inside <code>{braces}</code> is worked out and dropped into the text.</p>
+<pre><code><span class="t-key">let</span> name <span class="t-op">=</span> <span class="t-str">"Ada"</span>
+<span class="t-key">say</span> <span class="t-str">"Hello, {name}! You have {2 + 3} messages."</span>
+<span class="t-key">say</span> <span class="t-str">"nested is fine: {names |&gt; text.join(", ")}"</span></code></pre>
+
+<h3>Braces that are just braces</h3>
+<p>A <code>{</code> that does not hold a valid expression is left exactly as you typed it, so JSON, CSS and patterns need no escaping:</p>
+<pre><code><span class="t-key">say</span> <span class="t-str">'{"name": "Ada", "age": 36}'</span>   <span class="t-com"># prints the JSON as written</span>
+<span class="t-key">say</span> <span class="t-str">"a pattern like {2,3} is fine"</span>
+<span class="t-key">say</span> <span class="t-str">"body {{ color: red }}"</span>          <span class="t-com"># or double them to be explicit</span></code></pre>
+
+<h3>Escapes and raw text</h3>
+<pre><code><span class="t-key">say</span> <span class="t-str">"a tab\there and a newline\nthere"</span>
+<span class="t-key">say</span> <span class="t-str">r"C:\Users\raw\path"</span>              <span class="t-com"># r"..." takes no escapes</span>
+<span class="t-key">say</span> <span class="t-str">"""
+a block of text
+across several lines
+"""</span></code></pre>
+</section>
+
+<section id="names">
+<h2>Names</h2>
+<pre><code><span class="t-key">let</span> pi <span class="t-op">=</span> <span class="t-num">3.14159</span>     <span class="t-com"># named once, never changes</span>
+<span class="t-key">var</span> count <span class="t-op">=</span> <span class="t-num">0</span>        <span class="t-com"># this one can change</span>
+count <span class="t-op">+=</span> <span class="t-num">1</span></code></pre>
+<p><code>let</code> is the default because most things never need to change, and a value that cannot change is one fewer thing to keep track of. Try to reassign one and SHE says so:</p>
+<pre><code>TypeError: `pi` was declared with `let`, so it cannot be changed
+  --&gt; circle.she:4:1
+  help: use `var pi = ...` if it needs to change.</code></pre>
+<p>Names may end in <code>?</code> when they answer a question — <code>empty?</code>, <code>prime?</code>, <code>valid?</code>. It is only a convention, but it reads well.</p>
+</section>
+
+<section id="operators">
+<h2>Operators</h2>
+<table>
+<tr><th>Group</th><th>Operators</th></tr>
+<tr><td>arithmetic</td><td><code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>//</code> (whole division) <code>%</code> <code>^</code> (power)</td></tr>
+<tr><td>comparison</td><td><code>is</code> <code>is not</code> <code>==</code> <code>!=</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></td></tr>
+<tr><td>logic</td><td><code>and</code> <code>or</code> <code>not</code></td></tr>
+<tr><td>membership</td><td><code>in</code> <code>not in</code></td></tr>
+<tr><td>ranges</td><td><code>1..10</code> <code>1..&lt;10</code> <code>1..10 by 2</code></td></tr>
+<tr><td>access</td><td><code>.</code> <code>?.</code> (skip when nothing) <code>[]</code> <code>[a:b]</code></td></tr>
+<tr><td>defaults</td><td><code>??</code> — use the right side when the left is <code>nothing</code></td></tr>
+<tr><td>pipeline</td><td><code>|&gt;</code> — send the left value into the function on the right</td></tr>
+<tr><td>assignment</td><td><code>=</code> <code>+=</code> <code>-=</code> <code>*=</code> <code>/=</code> <code>//=</code> <code>%=</code> <code>^=</code> <code>??=</code></td></tr>
+</table>
+
+<h3>The pipeline</h3>
+<p><code>x |&gt; f(a)</code> means <code>f(x, a)</code>. It turns a nest of calls into a list of steps, read top to bottom:</p>
+<pre><code><span class="t-key">say</span> numbers
+  <span class="t-op">|&gt;</span> <span class="t-fun">filter</span>(<span class="t-key">fun</span>(n) <span class="t-op">-&gt;</span> n <span class="t-op">%</span> <span class="t-num">2</span> <span class="t-key">is</span> <span class="t-num">0</span>)
+  <span class="t-op">|&gt;</span> <span class="t-fun">map</span>(<span class="t-key">fun</span>(n) <span class="t-op">-&gt;</span> n <span class="t-op">/</span> <span class="t-num">2</span>)
+  <span class="t-op">|&gt;</span> <span class="t-fun">sum</span>()</code></pre>
+<p>A pipeline or a method chain may be split across lines — a line starting with <code>|&gt;</code> or <code>.</code> continues the one above.</p>
+</section>
+
+<section id="control">
+<h2>Control flow</h2>
+
+<h3>Deciding</h3>
+<pre><code><span class="t-key">if</span> age <span class="t-op">&gt;=</span> <span class="t-num">18</span>
+  <span class="t-key">say</span> <span class="t-str">"you can vote"</span>
+<span class="t-key">else if</span> age <span class="t-op">&gt;=</span> <span class="t-num">16</span>
+  <span class="t-key">say</span> <span class="t-str">"nearly there"</span>
+<span class="t-key">else</span>
+  <span class="t-key">say</span> <span class="t-str">"not yet"</span>
+<span class="t-key">end</span>
+
+<span class="t-com"># one line, when it fits on one line</span>
+<span class="t-key">if</span> ready <span class="t-key">then</span> <span class="t-fun">start</span>()
+
+<span class="t-com"># as a value — then and else are both required</span>
+<span class="t-key">let</span> price <span class="t-op">=</span> <span class="t-key">if</span> member <span class="t-key">then</span> <span class="t-num">20</span> <span class="t-key">else</span> <span class="t-num">40</span></code></pre>
+
+<h3>Repeating</h3>
+<pre><code><span class="t-key">for each</span> item <span class="t-key">in</span> shopping
+  <span class="t-key">say</span> item
+<span class="t-key">end</span>
+
+<span class="t-key">for each</span> i, item <span class="t-key">in</span> shopping        <span class="t-com"># position and value</span>
+<span class="t-key">for each</span> key, value <span class="t-key">in</span> settings      <span class="t-com"># over a map</span>
+<span class="t-key">for each</span> n <span class="t-key">in</span> <span class="t-num">1</span><span class="t-op">..</span><span class="t-num">10</span> <span class="t-key">by</span> <span class="t-num">2</span>            <span class="t-com"># over a range</span>
+
+<span class="t-key">while</span> countdown <span class="t-op">&gt;</span> <span class="t-num">0</span>
+  countdown <span class="t-op">-=</span> <span class="t-num">1</span>
+<span class="t-key">end</span>
+
+<span class="t-key">repeat</span>                             <span class="t-com"># always runs at least once</span>
+  tries <span class="t-op">+=</span> <span class="t-num">1</span>
+<span class="t-key">until</span> tries <span class="t-op">&gt;=</span> <span class="t-num">3</span></code></pre>
+<p><code>break</code> leaves the loop. <code>skip</code> moves straight to the next turn.</p>
+</section>
+
+<section id="collections">
+<h2>Lists and maps</h2>
+<pre><code><span class="t-key">let</span> numbers <span class="t-op">=</span> [<span class="t-num">4</span>, <span class="t-num">8</span>, <span class="t-num">15</span>, <span class="t-num">16</span>]
+
+<span class="t-key">say</span> numbers[<span class="t-num">0</span>]        <span class="t-out">→ 4</span>
+<span class="t-key">say</span> numbers[<span class="t-op">-</span><span class="t-num">1</span>]       <span class="t-out">→ 16   (counting from the end)</span>
+<span class="t-key">say</span> numbers[<span class="t-num">1</span>:<span class="t-num">3</span>]      <span class="t-out">→ [8, 15]</span>
+<span class="t-key">say</span> numbers.length    <span class="t-out">→ 4</span>
+
+<span class="t-key">let</span> person <span class="t-op">=</span> {name: <span class="t-str">"Ada"</span>, born: <span class="t-num">1815</span>}
+<span class="t-key">say</span> person.name       <span class="t-com"># the usual way</span>
+<span class="t-key">say</span> person[<span class="t-str">"born"</span>]    <span class="t-com"># when the key is in a variable</span>
+<span class="t-key">say</span> person.<span class="t-fun">get</span>(<span class="t-str">"email"</span>, <span class="t-str">"not given"</span>)</code></pre>
+
+<h3>Methods on every value</h3>
+<p><code>"hi".upper()</code> and <code>text.upper("hi")</code> are the same call — use whichever reads better where you are.</p>
+
+<h3>Spreading and taking apart</h3>
+<pre><code><span class="t-key">let</span> [first, second, <span class="t-op">...</span>rest] <span class="t-op">=</span> numbers
+<span class="t-key">let</span> combined <span class="t-op">=</span> [<span class="t-op">...</span>a, <span class="t-op">...</span>b, <span class="t-num">99</span>]
+<span class="t-key">let</span> updated <span class="t-op">=</span> {<span class="t-op">...</span>settings, theme: <span class="t-str">"dark"</span>}
+<span class="t-fun">add</span>(<span class="t-op">...</span>arguments)</code></pre>
+
+<div class="callout">
+  <b>Lists are never copied behind your back.</b> <code>a + [3]</code> gives you a new list
+  and leaves <code>a</code> alone. Only <code>push</code>, <code>pop</code> and friends change
+  a list in place, and their names say so.
+</div>
+</section>
+
+<section id="functions">
+<h2>Functions</h2>
+<pre><code><span class="t-com"># one expression — the arrow form</span>
+<span class="t-key">fun</span> <span class="t-fun">greet</span>(who <span class="t-op">=</span> <span class="t-str">"world"</span>) <span class="t-op">-&gt;</span> <span class="t-str">"Hello, {who}!"</span>
+
+<span class="t-com"># several steps — the block form</span>
+<span class="t-key">fun</span> <span class="t-fun">classify</span>(n)
+  <span class="t-str">"Say whether a number is negative, zero or positive."</span>
+  <span class="t-key">if</span> n <span class="t-op">&lt;</span> <span class="t-num">0</span> <span class="t-key">then return</span> <span class="t-str">"negative"</span>
+  <span class="t-key">if</span> n <span class="t-key">is</span> <span class="t-num">0</span> <span class="t-key">then return</span> <span class="t-str">"zero"</span>
+  <span class="t-key">return</span> <span class="t-str">"positive"</span>
+<span class="t-key">end</span></code></pre>
+<p>A bare piece of text at the top of a function body is its documentation, and <code>help(classify)</code> shows it.</p>
+
+<table>
+<tr><th>Feature</th><th>How</th></tr>
+<tr><td>Defaults</td><td><code>fun greet(who = "world")</code></td></tr>
+<tr><td>Named arguments</td><td><code>rectangle(width: 4, height: 3)</code></td></tr>
+<tr><td>Any number of values</td><td><code>fun total(...numbers)</code></td></tr>
+<tr><td>Spreading a list in</td><td><code>add(...pair)</code></td></tr>
+<tr><td>Anonymous</td><td><code>let double = fun(n) -> n * 2</code></td></tr>
+<tr><td>Closures</td><td>An inner function keeps whatever it can see</td></tr>
+</table>
+</section>
+
+<section id="types">
+<h2>Types</h2>
+<pre><code><span class="t-key">type</span> <span class="t-type">Point</span> <span class="t-key">has</span> x, y
+  <span class="t-str">"A place on a flat grid."</span>
+
+  <span class="t-key">fun</span> <span class="t-fun">length</span>(self) <span class="t-op">-&gt;</span> math.<span class="t-fun">sqrt</span>(self.x <span class="t-op">^</span> <span class="t-num">2</span> <span class="t-op">+</span> self.y <span class="t-op">^</span> <span class="t-num">2</span>)
+  <span class="t-key">fun</span> <span class="t-fun">to_text</span>(self) <span class="t-op">-&gt;</span> <span class="t-str">"({self.x}, {self.y})"</span>
+<span class="t-key">end</span>
+
+<span class="t-key">let</span> p <span class="t-op">=</span> <span class="t-type">Point</span>(<span class="t-num">3</span>, <span class="t-num">4</span>)
+<span class="t-key">say</span> p              <span class="t-out">→ (3, 4)</span>
+<span class="t-key">say</span> p.<span class="t-fun">length</span>()     <span class="t-out">→ 5</span></code></pre>
+
+<h3>Two hooks</h3>
+<table>
+<tr><th>Name</th><th>When it runs</th></tr>
+<tr><td><code>setup(self)</code></td><td>Just after a value is built — for working out extra fields</td></tr>
+<tr><td><code>to_text(self)</code></td><td>Whenever the value is printed or put inside text</td></tr>
+</table>
+
+<h3>Fields and inheritance</h3>
+<pre><code><span class="t-com"># fields can declare a kind and a default</span>
+<span class="t-key">type</span> <span class="t-type">Account</span> <span class="t-key">has</span> owner: <span class="t-type">text</span>, balance: <span class="t-type">number</span> <span class="t-op">=</span> <span class="t-num">0</span>
+
+<span class="t-com"># one type can build on another</span>
+<span class="t-key">type</span> <span class="t-type">Animal</span> <span class="t-key">has</span> name
+  <span class="t-key">fun</span> <span class="t-fun">speak</span>(self) <span class="t-op">-&gt;</span> <span class="t-str">"..."</span>
+  <span class="t-key">fun</span> <span class="t-fun">introduce</span>(self) <span class="t-op">-&gt;</span> <span class="t-str">"{self.name} says {self.speak()}"</span>
+<span class="t-key">end</span>
+
+<span class="t-key">type</span> <span class="t-type">Dog</span> <span class="t-key">from</span> <span class="t-type">Animal</span>
+  <span class="t-key">fun</span> <span class="t-fun">speak</span>(self) <span class="t-op">-&gt;</span> <span class="t-str">"woof"</span>
+<span class="t-key">end</span>
+
+<span class="t-key">say</span> <span class="t-type">Dog</span>(<span class="t-str">"Rex"</span>).<span class="t-fun">introduce</span>()   <span class="t-out">→ Rex says woof</span></code></pre>
+</section>
+
+<section id="matching">
+<h2>Pattern matching</h2>
+<p><code>match</code> picks a branch by the <em>shape</em> of a value, not just its value.</p>
+<pre><code><span class="t-key">match</span> value
+  <span class="t-key">case</span> <span class="t-num">0</span>                    <span class="t-op">-&gt;</span> <span class="t-str">"nothing at all"</span>
+  <span class="t-key">case</span> <span class="t-num">1</span> <span class="t-op">|</span> <span class="t-num">2</span> <span class="t-op">|</span> <span class="t-num">3</span>            <span class="t-op">-&gt;</span> <span class="t-str">"a small number"</span>
+  <span class="t-key">case</span> <span class="t-type">number</span>(n) <span class="t-key">if</span> n <span class="t-op">&lt;</span> <span class="t-num">0</span>    <span class="t-op">-&gt;</span> <span class="t-str">"below zero"</span>
+  <span class="t-key">case</span> <span class="t-num">4</span><span class="t-op">..</span><span class="t-num">99</span>                <span class="t-op">-&gt;</span> <span class="t-str">"a middling number"</span>
+  <span class="t-key">case</span> [first, <span class="t-op">...</span>rest]     <span class="t-op">-&gt;</span> <span class="t-str">"a list, {first} first"</span>
+  <span class="t-key">case</span> {name: n}            <span class="t-op">-&gt;</span> <span class="t-str">"something called {n}"</span>
+  <span class="t-key">case</span> <span class="t-type">Point</span>(<span class="t-num">0</span>, <span class="t-num">0</span>)          <span class="t-op">-&gt;</span> <span class="t-str">"the origin"</span>
+  <span class="t-key">case</span> <span class="t-type">Point</span>(x, y)          <span class="t-op">-&gt;</span> <span class="t-str">"at {x},{y}"</span>
+  <span class="t-key">case</span> _                    <span class="t-op">-&gt;</span> <span class="t-str">"something else"</span>
+<span class="t-key">end</span></code></pre>
+
+<table>
+<tr><th>Pattern</th><th>Matches</th></tr>
+<tr><td><code>42</code>, <code>"hi"</code>, <code>true</code></td><td>Exactly that value</td></tr>
+<tr><td><code>n</code></td><td>Anything, and names it <code>n</code></td></tr>
+<tr><td><code>_</code></td><td>Anything, without naming it</td></tr>
+<tr><td><code>1 | 2 | 3</code></td><td>Any one of several</td></tr>
+<tr><td><code>4..99</code></td><td>A number in that range</td></tr>
+<tr><td><code>[a, b]</code></td><td>A list of exactly two, naming both</td></tr>
+<tr><td><code>[first, ...rest]</code></td><td>A list of one or more</td></tr>
+<tr><td><code>{name: n}</code></td><td>A map holding at least <code>name</code></td></tr>
+<tr><td><code>Point(x, y)</code></td><td>A <code>Point</code>, naming its fields in order</td></tr>
+<tr><td><code>number(n)</code>, <code>text(t)</code></td><td>Any value of that kind</td></tr>
+<tr><td><code>case p if p &gt; 0</code></td><td>Add a condition to any pattern</td></tr>
+</table>
+<div class="callout">
+  If nothing matches, SHE stops and tells you which value went unhandled — so a
+  <code>match</code> that forgets a case fails loudly rather than quietly doing nothing.
+</div>
+</section>
+
+<section id="errors">
+<h2>Errors</h2>
+<pre><code><span class="t-key">try</span>
+  <span class="t-fun">risky</span>()
+<span class="t-key">catch</span> e: <span class="t-type">MathError</span>
+  <span class="t-key">say</span> <span class="t-str">"a maths problem: {e.message}"</span>
+<span class="t-key">catch</span> e: <span class="t-type">IndexError</span> <span class="t-op">|</span> <span class="t-type">KeyError</span>
+  <span class="t-key">say</span> <span class="t-str">"looked for something that was not there"</span>
+<span class="t-key">catch</span> e
+  <span class="t-key">say</span> <span class="t-str">"anything else: {e.kind}"</span>
+<span class="t-key">finally</span>
+  <span class="t-key">say</span> <span class="t-str">"cleaned up either way"</span>
+<span class="t-key">end</span></code></pre>
+
+<pre><code><span class="t-key">throw</span> <span class="t-str">"the amount has to be positive"</span>       <span class="t-com"># kind is "Error"</span>
+<span class="t-key">throw</span> <span class="t-fun">error</span>(<span class="t-str">"NotEnough"</span>, <span class="t-str">"you only have {balance}"</span>)
+
+<span class="t-key">assert</span> numbers.length <span class="t-op">&gt;</span> <span class="t-num">0</span>, <span class="t-str">"average needs a number"</span></code></pre>
+
+<h3>The kinds SHE raises</h3>
+<table>
+<tr><th>Kind</th><th>When</th></tr>
+<tr><td><code>SyntaxError</code></td><td>The program could not be read</td></tr>
+<tr><td><code>NameError</code></td><td>A name has not been defined</td></tr>
+<tr><td><code>TypeError</code></td><td>A value was the wrong kind for what you asked</td></tr>
+<tr><td><code>ValueError</code></td><td>The right kind, but not a usable value</td></tr>
+<tr><td><code>IndexError</code> / <code>KeyError</code></td><td>Nothing at that position or key</td></tr>
+<tr><td><code>MathError</code></td><td>Dividing by zero, the root of a negative number</td></tr>
+<tr><td><code>ImportError</code></td><td>No such module or file</td></tr>
+<tr><td><code>PermissionError</code></td><td>Something the program was not granted</td></tr>
+<tr><td><code>LimitError</code></td><td>A step or time budget ran out</td></tr>
+<tr><td><code>AssertionError</code></td><td>An <code>assert</code> or <code>expect</code> did not hold</td></tr>
+</table>
+</section>
+
+<section id="typing">
+<h2>Gradual typing</h2>
+<p>Types are optional everywhere. Where you write one, SHE checks it as the program runs — so you can add them to the parts that matter and leave the rest alone.</p>
+<pre><code><span class="t-key">let</span> count: <span class="t-type">number</span> <span class="t-op">=</span> <span class="t-num">0</span>
+<span class="t-key">fun</span> <span class="t-fun">area</span>(w: <span class="t-type">number</span>, h: <span class="t-type">number</span>): <span class="t-type">number</span> <span class="t-op">-&gt;</span> w <span class="t-op">*</span> h
+<span class="t-key">fun</span> <span class="t-fun">show</span>(v: <span class="t-type">number</span><span class="t-op">|</span><span class="t-type">text</span>) <span class="t-op">-&gt;</span> <span class="t-str">"{v}"</span>
+<span class="t-key">type</span> <span class="t-type">Account</span> <span class="t-key">has</span> owner: <span class="t-type">text</span>, balance: <span class="t-type">number</span> <span class="t-op">=</span> <span class="t-num">0</span></code></pre>
+<p>Names you can use: <code>number</code>, <code>text</code>, <code>bool</code>, <code>list</code>, <code>map</code>, <code>range</code>, <code>function</code>, <code>nothing</code>, <code>error</code>, <code>any</code>, or any type you define. Join them with <code>|</code>.</p>
+</section>
+
+<section id="async">
+<h2>Doing things at once</h2>
+<pre><code><span class="t-key">async fun</span> <span class="t-fun">fetch_price</span>(symbol)
+  <span class="t-key">return</span> http.<span class="t-fun">json</span>(<span class="t-str">"https://api.example.com/{symbol}"</span>).price
+<span class="t-key">end</span>
+
+<span class="t-key">let</span> tasks <span class="t-op">=</span> [<span class="t-str">"AAPL"</span>, <span class="t-str">"MSFT"</span>] <span class="t-op">|&gt;</span> <span class="t-fun">map</span>(fetch_price)
+<span class="t-key">for each</span> price <span class="t-key">in await</span> tasks
+  <span class="t-key">say</span> price
+<span class="t-key">end</span></code></pre>
+<div class="callout">
+  <b>How it works, plainly.</b> An <code>async fun</code> runs on a worker thread; calling
+  it hands back a task straight away, and <code>await</code> waits for the answer. That makes
+  waiting on files and the network genuinely parallel. It is not a green-threaded event
+  loop, and SHE does not pretend otherwise.
+</div>
+</section>
+
+<section id="modules">
+<h2>Modules</h2>
+<pre><code><span class="t-key">import</span> math                       <span class="t-com"># math.sqrt(16)</span>
+<span class="t-key">import</span> math <span class="t-key">as</span> m                  <span class="t-com"># m.sqrt(16)</span>
+<span class="t-key">from</span> math <span class="t-key">import</span> sqrt, pi          <span class="t-com"># sqrt(16)</span>
+
+<span class="t-key">use</span> <span class="t-str">"./helpers.she"</span> <span class="t-key">as</span> helpers     <span class="t-com"># another file of yours</span>
+<span class="t-key">from</span> <span class="t-str">"./helpers.she"</span> <span class="t-key">import</span> double</code></pre>
+<p><code>text</code>, <code>list</code>, <code>math</code>, <code>json</code>, <code>re</code>, <code>time</code> and <code>random</code> are always there. Everything that can reach outside the program — <code>fs</code>, <code>http</code>, <code>os</code>, <code>crypto</code>, <code>web</code>, <code>csv</code>, <code>maps</code> — has to be imported on purpose.</p>
+</section>
+
+<section id="testing">
+<h2>Testing</h2>
+<pre><code><span class="t-key">fun</span> <span class="t-fun">celsius_to_fahrenheit</span>(c) <span class="t-op">-&gt;</span> c <span class="t-op">*</span> <span class="t-num">9</span> <span class="t-op">/</span> <span class="t-num">5</span> <span class="t-op">+</span> <span class="t-num">32</span>
+
+<span class="t-key">test</span> <span class="t-str">"converts freezing and boiling"</span>
+  <span class="t-key">expect</span> <span class="t-fun">celsius_to_fahrenheit</span>(<span class="t-num">0</span>) <span class="t-key">is</span> <span class="t-num">32</span>
+  <span class="t-key">expect</span> <span class="t-fun">celsius_to_fahrenheit</span>(<span class="t-num">100</span>) <span class="t-key">is</span> <span class="t-num">212</span>
+<span class="t-key">end</span></code></pre>
+<pre><code>she test
+  ok    converts freezing and boiling
+  1 passed, 0 failed, 1 total</code></pre>
+<p><code>expect</code> takes <code>is</code>, <code>is not</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>in</code>, or nothing at all (meaning "this should be true"). Add a message with a comma. <code>assert</code> is the same check, for use outside tests.</p>
+</section>
+
+<!-- ---------- SECURITY ---------- -->
+<section id="permissions">
+<h2>Permissions</h2>
+<p>A SHE program begins with no authority whatsoever. It cannot read a file, write one, open a network connection, start another program or read an environment variable until you grant that capability when you run it.</p>
+
+<table>
+<tr><th>Flag</th><th>Allows</th></tr>
+<tr><td><code>--allow-read[=path]</code></td><td>Reading files. Narrow it to a folder or a single file.</td></tr>
+<tr><td><code>--allow-write[=path]</code></td><td>Writing or deleting files.</td></tr>
+<tr><td><code>--allow-net[=host]</code></td><td>Network connections. Hosts may use <code>*</code>.</td></tr>
+<tr><td><code>--allow-run[=program]</code></td><td>Starting other programs.</td></tr>
+<tr><td><code>--allow-env[=name]</code></td><td>Reading environment variables.</td></tr>
+<tr><td><code>--allow-time</code></td><td>Sleeping.</td></tr>
+<tr><td><code>--allow-all</code>, <code>-A</code></td><td>Everything. Handy while developing.</td></tr>
+</table>
+
+<pre><code>she run report.she
+she run report.she --allow-read=./data
+she run report.she --allow-read=./data --allow-net=api.stripe.com
+she run report.she --allow-net='*.github.com'</code></pre>
+
+<p>Scopes are checked properly: <code>--allow-read=./data</code> permits <code>./data/sales.csv</code> and refuses <code>../secrets.txt</code>, after resolving the path — so <code>./data/../../secrets.txt</code> is refused too.</p>
+
+<pre><code>PermissionError: report.she tried to read files from disk (~/.ssh/id_rsa),
+                 but was not given permission
+  --&gt; report.she:14:13
+     |
+  14 |   let key = fs.read("~/.ssh/id_rsa")
+     |             ^^^^^^^
+  help: run it with `--allow-read=~/.ssh/id_rsa` to permit this,
+        or `--allow-all` while you are developing.</code></pre>
+
+<div class="callout">
+  <b>Working things out is always free.</b> Arithmetic, text, lists, maps, your own
+  functions and types never need a permission. Only reaching outside the program does.
+</div>
+</section>
+
+<section id="limits">
+<h2>Budgets and limits</h2>
+<table>
+<tr><th>Flag</th><th>Effect</th></tr>
+<tr><td><code>--max-steps=N</code></td><td>Stop after N steps. Catches loops that never finish.</td></tr>
+<tr><td><code>--timeout=N</code></td><td>Stop after N seconds.</td></tr>
+<tr><td><code>--max-depth=N</code></td><td>How deep calls may nest. Default 200.</td></tr>
+</table>
+<pre><code>she run untrusted.she --max-steps=1000000 --timeout=5</code></pre>
+</section>
+
+<section id="untrusted">
+<h2>Running untrusted code</h2>
+<p>The combination of no permissions and a step budget is what makes it reasonable to run a SHE program you did not write:</p>
+<pre><code>she run submission.she --max-steps=5000000 --timeout=10</code></pre>
+<p>From Python, the same thing:</p>
+<pre><code><span class="t-key">from</span> she <span class="t-key">import</span> run
+<span class="t-key">from</span> she.sandbox <span class="t-key">import</span> Sandbox
+
+result, error = run(source, sandbox=Sandbox.locked(max_steps=5_000_000, timeout=10))</code></pre>
+<div class="callout warn">
+  <b>What this is and is not.</b> The sandbox governs what the SHE program can ask the
+  runtime to do. It is a strong boundary for scripts, marking student work and plugin
+  code. It is not a replacement for an OS-level sandbox or a container when you are
+  running code from people you have reason to distrust.
+</div>
+</section>
+
+<!-- ---------- STDLIB ---------- -->
+<section id="stdlib">
+<h2>Standard library</h2>
+<p><code>she doc</code> lists every module in your terminal, and <code>she doc math</code> shows one in full. <code>help(math)</code> does the same from inside a program.</p>
+<table>
+<tr><th>Module</th><th>What it is for</th><th>Needs</th></tr>
+<tr><td><code>core</code></td><td>Always there — no import at all</td><td>—</td></tr>
+<tr><td><code>text</code></td><td>Words and characters</td><td>—</td></tr>
+<tr><td><code>list</code></td><td>Ordered collections</td><td>—</td></tr>
+<tr><td><code>maps</code></td><td>Key/value collections</td><td><code>import</code></td></tr>
+<tr><td><code>math</code></td><td>Numbers, rounding, trigonometry, statistics</td><td>—</td></tr>
+<tr><td><code>json</code></td><td>Reading and writing JSON</td><td>—</td></tr>
+<tr><td><code>re</code></td><td>Finding and replacing with patterns</td><td>—</td></tr>
+<tr><td><code>time</code></td><td>Clocks and dates</td><td><code>--allow-time</code> to sleep</td></tr>
+<tr><td><code>random</code></td><td>Dice, shuffles, choices</td><td>—</td></tr>
+<tr><td><code>csv</code></td><td>Comma-separated tables</td><td><code>import</code></td></tr>
+<tr><td><code>crypto</code></td><td>Hashing, tokens, Kaalka</td><td><code>import</code></td></tr>
+<tr><td><code>fs</code></td><td>Files and folders</td><td><code>--allow-read</code>/<code>write</code></td></tr>
+<tr><td><code>http</code></td><td>Talking to the web</td><td><code>--allow-net</code></td></tr>
+<tr><td><code>os</code></td><td>The machine SHE is running on</td><td><code>--allow-env</code>/<code>run</code></td></tr>
+<tr><td><code>web</code></td><td>WebWeaveX graphs</td><td><code>--allow-net</code></td></tr>
+</table>
+</section>
+
+<section id="lib-core">
+<h3>core</h3>
+<p>Available in every program with no import.</p>
+<pre><code><span class="t-fun">say</span>  <span class="t-fun">ask</span>  <span class="t-fun">print</span>  <span class="t-fun">show</span>  <span class="t-fun">help</span>  <span class="t-fun">exit</span>  <span class="t-fun">modules</span>
+<span class="t-fun">to_text</span>  <span class="t-fun">to_number</span>  <span class="t-fun">to_bool</span>  <span class="t-fun">to_whole</span>  <span class="t-fun">to_list</span>  <span class="t-fun">to_map</span>
+<span class="t-fun">len</span>  <span class="t-fun">length</span>  <span class="t-fun">type_of</span>  <span class="t-fun">range</span>  <span class="t-fun">error</span>  <span class="t-fun">empty?</span>
+<span class="t-fun">keys</span>  <span class="t-fun">values</span>  <span class="t-fun">items</span>  <span class="t-fun">first</span>  <span class="t-fun">last</span>  <span class="t-fun">contains</span>  <span class="t-fun">count</span>
+<span class="t-fun">min</span>  <span class="t-fun">max</span>  <span class="t-fun">sum</span>  <span class="t-fun">abs</span>  <span class="t-fun">round</span>  <span class="t-fun">sorted</span>  <span class="t-fun">reversed</span>
+<span class="t-fun">map</span>  <span class="t-fun">filter</span>  <span class="t-fun">reduce</span>  <span class="t-fun">each</span>  <span class="t-fun">any</span>  <span class="t-fun">all</span>  <span class="t-fun">enumerate</span>  <span class="t-fun">zip</span></code></pre>
+</section>
+
+<section id="lib-text">
+<h3>text</h3>
+<p>Every one of these is also a method: <code>text.upper(s)</code> and <code>s.upper()</code> are the same call.</p>
+<pre><code><span class="t-fun">upper</span>  <span class="t-fun">lower</span>  <span class="t-fun">title</span>  <span class="t-fun">capitalise</span>  <span class="t-fun">reverse</span>  <span class="t-fun">slug</span>
+<span class="t-fun">trim</span>  <span class="t-fun">trim_start</span>  <span class="t-fun">trim_end</span>  <span class="t-fun">pad_start</span>  <span class="t-fun">pad_end</span>  <span class="t-fun">centre</span>
+<span class="t-fun">split</span>  <span class="t-fun">lines</span>  <span class="t-fun">join</span>  <span class="t-fun">replace</span>  <span class="t-fun">remove</span>  <span class="t-fun">repeat</span>  <span class="t-fun">wrap</span>  <span class="t-fun">indent</span>
+<span class="t-fun">contains</span>  <span class="t-fun">starts_with</span>  <span class="t-fun">ends_with</span>  <span class="t-fun">find</span>  <span class="t-fun">find_last</span>  <span class="t-fun">between</span>
+<span class="t-fun">slice</span>  <span class="t-fun">at</span>  <span class="t-fun">chars</span>  <span class="t-fun">count</span>  <span class="t-fun">code</span>  <span class="t-fun">from_code</span>
+<span class="t-fun">empty?</span>  <span class="t-fun">number?</span>  <span class="t-fun">digits?</span>  <span class="t-fun">letters?</span></code></pre>
+</section>
+
+<section id="lib-list">
+<h3>list</h3>
+<pre><code><span class="t-fun">push</span>  <span class="t-fun">pop</span>  <span class="t-fun">insert</span>  <span class="t-fun">remove</span>  <span class="t-fun">remove_at</span>  <span class="t-fun">clear</span>  <span class="t-fun">copy</span>
+<span class="t-fun">map</span>  <span class="t-fun">filter</span>  <span class="t-fun">reduce</span>  <span class="t-fun">each</span>  <span class="t-fun">find</span>  <span class="t-fun">find_index</span>  <span class="t-fun">partition</span>
+<span class="t-fun">sort</span>  <span class="t-fun">reverse</span>  <span class="t-fun">unique</span>  <span class="t-fun">flatten</span>  <span class="t-fun">chunk</span>  <span class="t-fun">group_by</span>  <span class="t-fun">shuffle</span>
+<span class="t-fun">take</span>  <span class="t-fun">drop</span>  <span class="t-fun">slice</span>  <span class="t-fun">first</span>  <span class="t-fun">last</span>  <span class="t-fun">index_of</span>  <span class="t-fun">contains</span>
+<span class="t-fun">sum</span>  <span class="t-fun">average</span>  <span class="t-fun">count</span>  <span class="t-fun">zip</span>  <span class="t-fun">concat</span>  <span class="t-fun">join</span>  <span class="t-fun">empty?</span></code></pre>
+<pre><code><span class="t-key">say</span> people <span class="t-op">|&gt;</span> list.<span class="t-fun">sort</span>(by: <span class="t-key">fun</span>(p) <span class="t-op">-&gt;</span> p.age, descending: <span class="t-key">true</span>)</code></pre>
+</section>
+
+<section id="lib-maps">
+<h3>maps</h3>
+<p>Usually written as methods — <code>m.get("key", fallback)</code>. The module is there when you want the function form.</p>
+<pre><code><span class="t-fun">get</span>  <span class="t-fun">set</span>  <span class="t-fun">has</span>  <span class="t-fun">remove</span>  <span class="t-fun">default</span>  <span class="t-fun">clear</span>  <span class="t-fun">copy</span>
+<span class="t-fun">keys</span>  <span class="t-fun">values</span>  <span class="t-fun">items</span>  <span class="t-fun">merge</span>  <span class="t-fun">invert</span>  <span class="t-fun">pick</span>  <span class="t-fun">omit</span>
+<span class="t-fun">map_values</span>  <span class="t-fun">filter</span>  <span class="t-fun">empty?</span></code></pre>
+</section>
+
+<section id="lib-math">
+<h3>math</h3>
+<pre><code><span class="t-fun">pi</span>  <span class="t-fun">e</span>  <span class="t-fun">tau</span>  <span class="t-fun">infinity</span>  <span class="t-fun">nan</span>
+<span class="t-fun">sqrt</span>  <span class="t-fun">root</span>  <span class="t-fun">power</span>  <span class="t-fun">exp</span>  <span class="t-fun">log</span>  <span class="t-fun">log2</span>  <span class="t-fun">log10</span>
+<span class="t-fun">floor</span>  <span class="t-fun">ceil</span>  <span class="t-fun">round</span>  <span class="t-fun">truncate</span>  <span class="t-fun">absolute</span>  <span class="t-fun">sign</span>  <span class="t-fun">clamp</span>  <span class="t-fun">between</span>
+<span class="t-fun">factorial</span>  <span class="t-fun">gcd</span>  <span class="t-fun">lcm</span>  <span class="t-fun">prime?</span>  <span class="t-fun">even?</span>  <span class="t-fun">odd?</span>
+<span class="t-fun">mean</span>  <span class="t-fun">median</span>  <span class="t-fun">mode</span>  <span class="t-fun">stdev</span>  <span class="t-fun">variance</span>
+<span class="t-fun">sin</span>  <span class="t-fun">cos</span>  <span class="t-fun">tan</span>  <span class="t-fun">asin</span>  <span class="t-fun">acos</span>  <span class="t-fun">atan</span>  <span class="t-fun">degrees</span>  <span class="t-fun">radians</span>  <span class="t-fun">hypotenuse</span>
+<span class="t-fun">to_base</span>  <span class="t-fun">from_base</span>  <span class="t-fun">nan?</span>  <span class="t-fun">finite?</span></code></pre>
+</section>
+
+<section id="lib-json">
+<h3>json &amp; csv</h3>
+<pre><code><span class="t-key">let</span> data <span class="t-op">=</span> json.<span class="t-fun">parse</span>(text)
+<span class="t-key">say</span> json.<span class="t-fun">pretty</span>(data)
+<span class="t-key">say</span> json.<span class="t-fun">stringify</span>(data)
+<span class="t-key">say</span> json.<span class="t-fun">valid?</span>(text)
+
+<span class="t-key">import</span> csv
+<span class="t-key">let</span> rows <span class="t-op">=</span> csv.<span class="t-fun">parse</span>(text)         <span class="t-com"># a list of maps</span>
+<span class="t-key">say</span> csv.<span class="t-fun">stringify</span>(rows)</code></pre>
+</section>
+
+<section id="lib-re">
+<h3>re</h3>
+<pre><code><span class="t-key">say</span> re.<span class="t-fun">matches?</span>(<span class="t-str">"hello"</span>, <span class="t-str">"^h"</span>)
+<span class="t-key">say</span> re.<span class="t-fun">find_all</span>(<span class="t-str">"a1b2"</span>, <span class="t-str">"[0-9]"</span>)
+<span class="t-key">say</span> re.<span class="t-fun">replace</span>(<span class="t-str">"a-b"</span>, <span class="t-str">"-"</span>, <span class="t-str">"+"</span>)
+<span class="t-key">say</span> re.<span class="t-fun">named</span>(<span class="t-str">"2026-08-27"</span>, <span class="t-str">r"(?P&lt;year&gt;\d{4})-(?P&lt;month&gt;\d{2})"</span>)</code></pre>
+<p>Also <code>find</code>, <code>groups</code>, <code>split</code>, <code>escape</code>, <code>count</code>.</p>
+</section>
+
+<section id="lib-time">
+<h3>time &amp; random</h3>
+<pre><code><span class="t-key">say</span> time.<span class="t-fun">now</span>()  time.<span class="t-fun">today</span>()  time.<span class="t-fun">clock</span>()  time.<span class="t-fun">timestamp</span>()
+<span class="t-key">say</span> time.<span class="t-fun">format</span>(<span class="t-key">nothing</span>, <span class="t-str">"%A %d %B %Y"</span>)
+<span class="t-key">say</span> time.<span class="t-fun">parts</span>(time.<span class="t-fun">timestamp</span>()).weekday
+
+random.<span class="t-fun">seed</span>(<span class="t-num">7</span>)                 <span class="t-com"># repeatable runs, for tests</span>
+<span class="t-key">say</span> random.<span class="t-fun">whole</span>(<span class="t-num">1</span>, <span class="t-num">6</span>)  random.<span class="t-fun">dice</span>(<span class="t-num">6</span>, <span class="t-num">2</span>)  random.<span class="t-fun">uuid</span>()
+<span class="t-key">say</span> random.<span class="t-fun">choice</span>(names)  random.<span class="t-fun">shuffle</span>(deck)</code></pre>
+</section>
+
+<section id="lib-fs">
+<h3>fs <span style="font-size:13px;color:var(--ink-3)">— needs --allow-read / --allow-write</span></h3>
+<pre><code><span class="t-fun">read</span>  <span class="t-fun">read_lines</span>  <span class="t-fun">read_bytes</span>  <span class="t-fun">write</span>  <span class="t-fun">append</span>
+<span class="t-fun">exists?</span>  <span class="t-fun">file?</span>  <span class="t-fun">folder?</span>  <span class="t-fun">list</span>  <span class="t-fun">walk</span>  <span class="t-fun">size</span>  <span class="t-fun">modified</span>
+<span class="t-fun">make_folder</span>  <span class="t-fun">remove</span>  <span class="t-fun">remove_folder</span>  <span class="t-fun">copy</span>  <span class="t-fun">move</span>
+<span class="t-fun">join</span>  <span class="t-fun">name</span>  <span class="t-fun">folder</span>  <span class="t-fun">extension</span>  <span class="t-fun">absolute</span></code></pre>
+</section>
+
+<section id="lib-http">
+<h3>http &amp; os <span style="font-size:13px;color:var(--ink-3)">— need --allow-net / --allow-env / --allow-run</span></h3>
+<pre><code><span class="t-key">let</span> answer <span class="t-op">=</span> http.<span class="t-fun">get</span>(<span class="t-str">"https://api.example.com/things"</span>)
+<span class="t-key">say</span> answer.status, answer.ok
+<span class="t-key">let</span> data <span class="t-op">=</span> http.<span class="t-fun">json</span>(<span class="t-str">"https://api.example.com/things"</span>)
+http.<span class="t-fun">post</span>(url, {name: <span class="t-str">"Ada"</span>})     <span class="t-com"># maps are sent as JSON</span>
+
+<span class="t-key">say</span> os.<span class="t-fun">platform</span>()  os.<span class="t-fun">cpu_count</span>()  os.<span class="t-fun">version</span>()
+<span class="t-key">say</span> os.<span class="t-fun">env</span>(<span class="t-str">"HOME"</span>, <span class="t-str">"unset"</span>)
+<span class="t-key">say</span> os.<span class="t-fun">run</span>(<span class="t-str">"git"</span>, [<span class="t-str">"status"</span>]).output
+<span class="t-key">say</span> os.<span class="t-fun">args</span>()                    <span class="t-com"># whatever followed the script name</span></code></pre>
+</section>
+
+<section id="lib-crypto">
+<h3>crypto</h3>
+<p>Two halves, and it matters which you reach for.</p>
+<h4 style="margin-top:20px">Vetted primitives</h4>
+<pre><code><span class="t-key">say</span> crypto.<span class="t-fun">hash</span>(<span class="t-str">"she"</span>)                    <span class="t-com"># sha256 by default</span>
+<span class="t-key">say</span> crypto.<span class="t-fun">hmac</span>(<span class="t-str">"payload"</span>, <span class="t-str">"key"</span>)
+<span class="t-key">say</span> crypto.<span class="t-fun">token</span>(<span class="t-num">32</span>)
+<span class="t-key">let</span> stored <span class="t-op">=</span> crypto.<span class="t-fun">password_hash</span>(password)   <span class="t-com"># PBKDF2-SHA256</span>
+<span class="t-key">say</span> crypto.<span class="t-fun">password_check</span>(attempt, stored)
+<span class="t-key">say</span> crypto.<span class="t-fun">compare</span>(a, b)                <span class="t-com"># timing-safe</span></code></pre>
+<h4 style="margin-top:20px">Kaalka — encryption keyed by a moment in time</h4>
+<pre><code><span class="t-key">let</span> sealed <span class="t-op">=</span> crypto.<span class="t-fun">seal</span>(<span class="t-str">"meet at the bridge"</span>, <span class="t-str">"14:35:22"</span>)
+<span class="t-key">say</span> crypto.<span class="t-fun">open</span>(sealed, <span class="t-str">"14:35:22"</span>)
+
+<span class="t-key">let</span> packet <span class="t-op">=</span> crypto.<span class="t-fun">envelope</span>(message, <span class="t-str">"ada"</span>, <span class="t-str">"bob"</span>)
+<span class="t-key">say</span> crypto.<span class="t-fun">open_envelope</span>(packet, <span class="t-str">"bob"</span>)</code></pre>
+<p><code>seal</code> and <code>open</code> armour Kaalka's output as base64. Raw <code>kaalka_encrypt</code> output holds characters that do not survive a file, a URL or a JSON field, so use the sealed pair whenever the ciphertext has to travel.</p>
+<div class="callout warn">
+  <b>Said plainly.</b> Kaalka is a novel construction that has not been through public
+  cryptanalysis. SHE ships it for time-keyed handoff, puzzles and teaching. For secrets
+  that matter, use <code>hash</code>, <code>hmac</code>, <code>password_hash</code> and
+  <code>token</code> above, which wrap primitives that have been.
+</div>
+</section>
+
+<section id="lib-web">
+<h3>web <span style="font-size:13px;color:var(--ink-3)">— WebWeaveX, needs --allow-net</span></h3>
+<pre><code><span class="t-key">let</span> graph <span class="t-op">=</span> web.<span class="t-fun">extract</span>(<span class="t-str">"https://example.com"</span>, <span class="t-str">"web"</span>)
+<span class="t-key">say</span> web.<span class="t-fun">nodes</span>(graph).length
+<span class="t-key">say</span> web.<span class="t-fun">edges</span>(graph).length
+<span class="t-key">say</span> web.<span class="t-fun">fingerprint</span>(graph)      <span class="t-com"># same input, same identity</span>
+<span class="t-key">say</span> web.<span class="t-fun">kaalka_hash</span>(graph)
+
+web.<span class="t-fun">repo</span>(<span class="t-str">"."</span>)  web.<span class="t-fun">docs</span>(path)  web.<span class="t-fun">crawl</span>(url)  web.<span class="t-fun">query</span>(graph, name)</code></pre>
+</section>
+
+<!-- ---------- REFERENCE ---------- -->
+<section id="grammar">
+<h2>Grammar</h2>
+<pre><code>program     = statement*
+
+statement   = "let" | "var" target [":" type] "=" expression
+            | target ("=" | "+=" | "-=" | ...) expression
+            | "say" [expression ("," expression)*]
+            | "if" expression ("then" statement | block ("else" ...)? "end")
+            | "while" expression block "end"
+            | "repeat" block "until" expression
+            | "for" ["each"] targets "in" expression ["by" expression] block "end"
+            | "fun" NAME params ["->" expression | block "end"]
+            | "type" NAME ["has" fields] ["from" NAME] [methods "end"]
+            | "try" block ("catch" [NAME [":" kinds]] block)* ["finally" block] "end"
+            | "throw" expression
+            | "import" NAME ["as" NAME] | "from" NAME "import" names
+            | "use" TEXT ["as" NAME]
+            | "test" TEXT block "end"
+            | ("expect" | "assert") expression [op expression] ["," expression]
+            | "return" [expression] | "break" | "skip"
+            | expression
+
+expression  = pipeline
+pipeline    = coalesce ("|>" coalesce)*
+coalesce    = or ("??" or)*
+or          = and ("or" and)*
+and         = compare ("and" compare)*
+compare     = range (("is"|"is not"|"=="|"!="|"<"|">"|"<="|">="|"in") range)*
+range       = sum ((".." | "..<") sum)*
+sum         = product (("+" | "-") product)*
+product     = power (("*" | "/" | "//" | "%") power)*
+power       = unary ("^" power)*
+unary       = ("not" | "-" | "+" | "await") unary | postfix
+postfix     = primary (call | "." NAME | "?." NAME | "[" index "]")*
+primary     = NUMBER | TEXT | "true" | "false" | "nothing" | NAME
+            | "(" expression ")" | list | map | lambda
+            | "if" e "then" e "else" e | "match" e case+ "end" | "ask" [e]</code></pre>
+</section>
+
+<section id="embedding">
+<h2>Embedding SHE</h2>
+<p>SHE is an ordinary Python package, so you can run SHE from Python with whatever authority you choose.</p>
+<pre><code><span class="t-key">from</span> she <span class="t-key">import</span> run, Interpreter
+<span class="t-key">from</span> she.sandbox <span class="t-key">import</span> Sandbox, Grant
+
+<span class="t-com"># the simple way</span>
+result, error = run(<span class="t-str">'say "Hello!"'</span>)
+<span class="t-key">if</span> error:
+    print(error.render())
+
+<span class="t-com"># with exactly the authority you want</span>
+box = Sandbox([Grant(<span class="t-str">"read"</span>, [<span class="t-str">"./data"</span>])], max_steps=1_000_000, timeout=5)
+result, error = run(source, sandbox=box)
+
+<span class="t-com"># or drive the interpreter yourself, and add your own builtins</span>
+<span class="t-key">from</span> she.stdlib <span class="t-key">import</span> wrap
+engine = Interpreter(sandbox=Sandbox.locked())
+engine.globals.declare(<span class="t-str">"double"</span>, wrap(<span class="t-key">lambda</span> n: n * 2, <span class="t-str">"double"</span>), mutable=<span class="t-key">False</span>)
+engine.run(<span class="t-str">"say double(21)"</span>)</code></pre>
+</section>
+
+<section id="editors">
+<h2>Editor support</h2>
+<p>SHE ships a language server. Any editor that speaks LSP can point at <code>she lsp</code> and get live diagnostics, completion, hover documentation and formatting.</p>
+<pre><code>cd editors/vscode
+npm install && npm run package
+code --install-extension she-lang-2.0.0.vsix</code></pre>
+</section>
+
+<section id="migrating">
+<h2>Coming from SHE v1</h2>
+<p>SHE 2.0 is a rewrite and does not run v1 programs. The old interpreter lives on the <code>v1.0.0</code> branch. The translation is mechanical:</p>
+<table>
+<tr><th>v1</th><th>v2</th></tr>
+<tr><td><code>VAR x = 5</code></td><td><code>let x = 5</code> (or <code>var</code> if it changes)</td></tr>
+<tr><td><code>PRINT(x)</code></td><td><code>say x</code></td></tr>
+<tr><td><code>IF a THEN b ELSE c</code></td><td><code>if a then b else c</code></td></tr>
+<tr><td><code>FOR i = 1 TO 5 THEN ...</code></td><td><code>for each i in 1..5 ... end</code></td></tr>
+<tr><td><code>WHILE c THEN ... END</code></td><td><code>while c ... end</code></td></tr>
+<tr><td><code>FUN add(a, b) -&gt; a + b</code></td><td><code>fun add(a, b) -&gt; a + b</code></td></tr>
+<tr><td><code>APPEND(xs, v)</code></td><td><code>xs.push(v)</code></td></tr>
+<tr><td><code>LEN(xs)</code></td><td><code>xs.length</code></td></tr>
+<tr><td><code>list / 0</code> (index)</td><td><code>list[0]</code></td></tr>
+<tr><td><code>KAALKA_ENCRYPT(m, t)</code></td><td><code>crypto.seal(m, t)</code> after <code>import crypto</code></td></tr>
+<tr><td><code>1</code> / <code>0</code> for true/false</td><td><code>true</code> / <code>false</code></td></tr>
+</table>
+<div class="callout">
+  Beyond the syntax, three things changed on purpose: booleans are real values rather than
+  <code>1</code> and <code>0</code>; lists are no longer quietly shared between variables;
+  and a program has no permissions until you grant them.
+</div>
+</section>
+
+<div class="coffee-band" style="margin-top:60px">
+  <div>
+    <h3>Found this useful?</h3>
+    <p>SHE is Apache 2.0 and built in the open. A coffee keeps it moving; a star helps others find it.</p>
+  </div>
+  <div class="actions">
+    <a class="btn btn-coffee" href="https://buymeacoffee.com/piyushmishra">☕ Buy me a coffee</a>
+    <a class="btn btn-ghost" href="https://github.com/ni-sh-a-char/SHE">★ Star on GitHub</a>
+  </div>
+</div>
+
+</main>
+
+<aside class="onthispage">
+  <h4>On this page</h4>
+  <div id="toc"></div>
+</aside>
+
+</div>
+</div>
+
+<footer class="bottom">
+  <div class="shell">
+    <div class="base">
+      <a class="brand" href="./" style="margin-right:auto">
+        <img src="assets/logo.svg" alt=""><span>SHE</span>
+      </a>
+      <span>Apache 2.0</span><span>·</span>
+      <a href="https://github.com/ni-sh-a-char/SHE" style="display:inline">GitHub</a><span>·</span>
+      <a href="https://buymeacoffee.com/piyushmishra" style="display:inline">Support</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// theme
+const root = document.documentElement;
+const stored = (() => { try { return localStorage.getItem("she:theme"); } catch (_) { return null; } })();
+if (stored) root.dataset.theme = stored;
+else if (window.matchMedia("(prefers-color-scheme: light)").matches) root.dataset.theme = "light";
+document.getElementById("theme").addEventListener("click", () => {
+  root.dataset.theme = root.dataset.theme === "light" ? "dark" : "light";
+  try { localStorage.setItem("she:theme", root.dataset.theme); } catch (_) {}
+});
+
+// highlight the section you are reading
+const links = [...document.querySelectorAll(".docs-nav a")];
+const sections = [...document.querySelectorAll(".docs-body section")];
+const spy = new IntersectionObserver((entries) => {
+  for (const entry of entries) {
+    if (!entry.isIntersecting) continue;
+    for (const link of links) {
+      link.classList.toggle("active", link.getAttribute("href") === "#" + entry.target.id);
+    }
+  }
+}, { rootMargin: "-72px 0px -70% 0px" });
+sections.forEach((s) => spy.observe(s));
+
+// "on this page" from the headings of the section in view
+const toc = document.getElementById("toc");
+const rebuild = (section) => {
+  toc.innerHTML = "";
+  for (const heading of section.querySelectorAll("h3")) {
+    if (!heading.id) heading.id = heading.textContent.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    const link = document.createElement("a");
+    link.href = "#" + heading.id;
+    link.textContent = heading.textContent;
+    toc.appendChild(link);
+  }
+};
+const tocSpy = new IntersectionObserver((entries) => {
+  const showing = entries.find((e) => e.isIntersecting);
+  if (showing) rebuild(showing.target);
+}, { rootMargin: "-72px 0px -70% 0px" });
+sections.forEach((s) => tocSpy.observe(s));
+
+// search filters the sidebar and the page
+const search = document.getElementById("search");
+search.addEventListener("input", () => {
+  const needle = search.value.trim().toLowerCase();
+  if (!needle) {
+    links.forEach((l) => { l.style.display = ""; });
+    sections.forEach((s) => { s.style.display = ""; });
+    return;
+  }
+  const hits = new Set();
+  for (const section of sections) {
+    const match = section.textContent.toLowerCase().includes(needle);
+    section.style.display = match ? "" : "none";
+    if (match) hits.add("#" + section.id);
+  }
+  for (const link of links) {
+    link.style.display = hits.has(link.getAttribute("href")) ? "" : "none";
+  }
+});
+search.addEventListener("keydown", (e) => { if (e.key === "Escape") { search.value = ""; search.dispatchEvent(new Event("input")); } });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "/" && document.activeElement !== search) { e.preventDefault(); search.focus(); }
+});
+</script>
+</body>
+</html>

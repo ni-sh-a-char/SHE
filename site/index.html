@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SHE — a programming language that reads like English</title>
+<meta name="description" content="SHE is a programming language that reads like English and starts with no permissions at all. Pattern matching, gradual types, pipelines and a capability sandbox. pip install she-lang.">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<meta property="og:title" content="SHE — a programming language that reads like English">
+<meta property="og:description" content="Reads like a sentence. Cannot touch your machine unless you say so. Try it in your browser.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://she-lang.dev">
+<meta property="og:image" content="https://she-lang.dev/assets/wordmark.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;760&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="aurora"><i></i><i></i><i></i></div>
+<div class="grid-lines"></div>
+
+<header class="top">
+  <div class="shell">
+    <a class="brand" href="./">
+      <img src="assets/logo.svg" alt=""><span>SHE</span>
+    </a>
+    <nav>
+      <a href="#tour" class="hide-sm">Tour</a>
+      <a href="#security" class="hide-sm">Security</a>
+      <a href="#playground">Playground</a>
+      <a href="docs.html">Docs</a>
+      <a href="https://github.com/ni-sh-a-char/SHE" class="hide-sm">GitHub</a>
+      <button class="icon-btn" id="theme" title="Switch between light and dark" aria-label="Switch theme">◐</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ========================= HERO ========================= -->
+<section class="hero">
+  <div class="shell hero-grid">
+    <div>
+      <div class="badge-row">
+        <span class="pill"><span class="dot"></span> <b>v2.0</b> released</span>
+        <span class="pill">Apache&nbsp;2.0</span>
+        <span class="pill">Python&nbsp;3.9+</span>
+        <span class="pill">zero dependencies</span>
+      </div>
+
+      <h1>A language that<br><span class="gradient-text">reads like English.</span></h1>
+
+      <p class="lede">
+        No braces. No boilerplate. No ceremony. And no ability to read your files,
+        reach the network or start a process — until you grant it on the command line.
+      </p>
+
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#playground">▶ Try it in your browser</a>
+        <a class="btn btn-ghost" href="docs.html">Read the docs</a>
+      </div>
+
+      <div class="install-line">
+        <span class="prompt">$</span>
+        <span id="install-cmd">pip install she-lang</span>
+        <button class="copy" data-copy="pip install she-lang">copy</button>
+      </div>
+    </div>
+
+    <div class="window">
+      <div class="window-bar">
+        <i class="lamp"></i><i class="lamp"></i><i class="lamp"></i>
+        <span class="name">greeting.she</span>
+      </div>
+<pre><code><span class="t-com"># everything you need to know, in nine lines</span>
+<span class="t-key">let</span> name <span class="t-op">=</span> <span class="t-key">ask</span> <span class="t-str">"What is your name?"</span>
+<span class="t-key">say</span> <span class="t-str">"Hello, {name}!"</span>
+
+<span class="t-key">let</span> numbers <span class="t-op">=</span> [<span class="t-num">4</span>, <span class="t-num">8</span>, <span class="t-num">15</span>, <span class="t-num">16</span>, <span class="t-num">23</span>, <span class="t-num">42</span>]
+
+<span class="t-key">say</span> numbers
+  <span class="t-op">|&gt;</span> <span class="t-fun">filter</span>(<span class="t-key">fun</span>(n) <span class="t-op">-&gt;</span> n <span class="t-op">%</span> <span class="t-num">2</span> <span class="t-key">is</span> <span class="t-num">0</span>)
+  <span class="t-op">|&gt;</span> <span class="t-fun">map</span>(<span class="t-key">fun</span>(n) <span class="t-op">-&gt;</span> n <span class="t-op">/</span> <span class="t-num">2</span>)
+  <span class="t-op">|&gt;</span> <span class="t-fun">sum</span>()
+
+<span class="t-out">→ 45</span></code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= THE PITCH ========================= -->
+<section id="why">
+  <div class="shell">
+    <p class="eyebrow">Why another language</p>
+    <h2>Most languages make you choose.<br>SHE refuses.</h2>
+    <p class="lede" style="margin-bottom:40px">
+      Readable <em>or</em> capable. Friendly <em>or</em> safe. A toy you outgrow in a week,
+      or a professional tool with a month-long ramp. Those were never real trade-offs.
+    </p>
+
+    <div class="cards three">
+      <div class="card">
+        <div class="num">01</div>
+        <div class="card-icon">✎</div>
+        <h3>You can read it out loud</h3>
+        <p>
+          Blocks end with <code>end</code>. Comparisons use <code>is</code>. Loops say
+          <code>for each item in items</code>. Someone who has never programmed can follow
+          a SHE file — and it still fits on one screen.
+        </p>
+      </div>
+      <div class="card">
+        <div class="num">02</div>
+        <div class="card-icon">🔒</div>
+        <h3>It has no power by default</h3>
+        <p>
+          A program cannot read a file, open a socket or start a process until you say so
+          on the command line. Not a linter rule — the runtime enforces it, every call.
+        </p>
+      </div>
+      <div class="card">
+        <div class="num">03</div>
+        <div class="card-icon">◎</div>
+        <h3>The errors teach</h3>
+        <p>
+          Every message points at the exact source, explains the problem in plain words,
+          and suggests the fix. Misspell a name and it tells you which one you meant.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= SECURITY ========================= -->
+<section id="security" style="background:var(--bg-soft);border-block:1px solid var(--line-soft)">
+  <div class="shell">
+    <div class="split">
+      <div>
+        <p class="eyebrow">The part that matters</p>
+        <h2>Permission is a<br><span class="gradient-text">command-line decision.</span></h2>
+        <p class="lede">
+          Every other scripting language hands a downloaded script the full authority of
+          whoever ran it. SHE hands it nothing. You grant exactly what the job needs, and
+          the runtime refuses everything else — with a message naming the flag that would
+          have allowed it.
+        </p>
+        <div class="chip-row">
+          <span class="chip">--allow-read=./data</span>
+          <span class="chip">--allow-write</span>
+          <span class="chip">--allow-net=api.stripe.com</span>
+          <span class="chip">--allow-run</span>
+          <span class="chip">--allow-env</span>
+          <span class="chip">--max-steps=1000000</span>
+          <span class="chip">--timeout=30</span>
+        </div>
+        <p style="margin-top:26px">
+          <a class="btn btn-ghost" href="docs.html#permissions">How the sandbox works →</a>
+        </p>
+      </div>
+
+      <div>
+        <div class="terminal">
+<span class="cmd">she run report.she</span>
+<span class="no">PermissionError:</span> report.she tried to read files from disk
+                 (~/.ssh/id_rsa), but was not given permission
+  <span class="dim">--&gt; report.she:14:13</span>
+     <span class="dim">|</span>
+  <span class="dim">14 |   let key = fs.read("~/.ssh/id_rsa")</span>
+     <span class="dim">|             ^^^^^^^</span>
+  <span style="color:#67E8F9">help:</span> run it with `--allow-read=~/.ssh/id_rsa` to permit
+        this, or `--allow-all` while you are developing.
+
+<span class="cmd">she run report.she --allow-read=./data</span>
+<span class="ok">✓</span> read 1,248 rows from data/sales.csv
+<span class="ok">✓</span> wrote nothing, reached nothing
+</div>
+        <div class="callout" style="margin-top:18px">
+          <b>Read the flags, know the blast radius.</b> Reviewing a SHE script for safety
+          starts with one line of the command that runs it.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= PLAYGROUND ========================= -->
+<section id="playground">
+  <div class="shell">
+    <p class="eyebrow">No install required</p>
+    <h2>Run SHE right here.</h2>
+    <p class="lede" style="margin-bottom:26px">
+      This is the real interpreter, compiled to WebAssembly and running in your browser.
+      Nothing is sent anywhere. Press <b>Run</b>, or <code>Ctrl</code>+<code>Enter</code>.
+    </p>
+
+    <div class="window" id="pg">
+      <div class="pg-toolbar">
+        <button class="pg-run" data-run>▶ Run</button>
+        <select data-sample aria-label="Choose an example"></select>
+        <button data-reset>reset</button>
+        <button data-share>share</button>
+        <label class="chip" style="display:inline-flex;align-items:center;gap:7px;cursor:pointer">
+          <input type="checkbox" data-allow style="accent-color:var(--violet)"> grant permissions
+        </label>
+        <span class="pg-status" data-status>idle</span>
+      </div>
+      <div class="pg">
+        <div class="pg-editor">
+          <textarea data-editor spellcheck="false" aria-label="SHE code editor"></textarea>
+        </div>
+        <div class="pg-output">
+          <pre class="pg-console" data-console><span class="note">Press Run to start. The first run downloads the interpreter — about ten seconds, once.</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= TOUR ========================= -->
+<section id="tour" style="background:var(--bg-soft);border-block:1px solid var(--line-soft)">
+  <div class="shell">
+    <p class="eyebrow">A tour</p>
+    <h2>Everything a modern language has.</h2>
+    <p class="lede" style="margin-bottom:28px">
+      Pattern matching, gradual types, closures, destructuring, pipelines, async,
+      modules and a test runner. None of it optional extras — all of it in the box.
+    </p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-tab="t-basics">basics</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="t-fun">functions</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="t-types">types</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="t-match">matching</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="t-errors">errors</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="t-async">async</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="t-test">tests</button>
+    </div>
+
+    <div class="window">
+      <div class="window-bar">
+        <i class="lamp"></i><i class="lamp"></i><i class="lamp"></i>
+        <span class="name" id="tab-name">basics.she</span>
+      </div>
+
+      <div class="tab-panel" id="t-basics">
+<pre><code><span class="t-key">let</span> pi <span class="t-op">=</span> <span class="t-num">3.14159</span>        <span class="t-com"># named once, never changes</span>
+<span class="t-key">var</span> count <span class="t-op">=</span> <span class="t-num">0</span>           <span class="t-com"># this one can</span>
+count <span class="t-op">+=</span> <span class="t-num">1</span>
+
+<span class="t-key">if</span> age <span class="t-op">&gt;=</span> <span class="t-num">18</span>
+  <span class="t-key">say</span> <span class="t-str">"you can vote"</span>
+<span class="t-key">else if</span> age <span class="t-op">&gt;=</span> <span class="t-num">16</span>
+  <span class="t-key">say</span> <span class="t-str">"nearly there"</span>
+<span class="t-key">else</span>
+  <span class="t-key">say</span> <span class="t-str">"not yet"</span>
+<span class="t-key">end</span>
+
+<span class="t-key">for each</span> n <span class="t-key">in</span> <span class="t-num">1</span><span class="t-op">..</span><span class="t-num">10</span> <span class="t-key">by</span> <span class="t-num">2</span>
+  <span class="t-key">say</span> <span class="t-str">"{n} squared is {n ^ 2}"</span>
+<span class="t-key">end</span>
+
+<span class="t-key">repeat</span>
+  tries <span class="t-op">+=</span> <span class="t-num">1</span>
+<span class="t-key">until</span> tries <span class="t-op">&gt;=</span> <span class="t-num">3</span>
+
+<span class="t-key">let</span> [first, second, <span class="t-op">...</span>rest] <span class="t-op">=</span> numbers   <span class="t-com"># destructuring</span>
+<span class="t-key">let</span> nickname <span class="t-op">=</span> user<span class="t-op">?.</span>profile<span class="t-op">?.</span>name <span class="t-op">??</span> <span class="t-str">"friend"</span></code></pre>
+      </div>
+
+      <div class="tab-panel" id="t-fun" hidden>
+<pre><code><span class="t-key">fun</span> <span class="t-fun">greet</span>(who <span class="t-op">=</span> <span class="t-str">"world"</span>) <span class="t-op">-&gt;</span> <span class="t-str">"Hello, {who}!"</span>
+
+<span class="t-key">fun</span> <span class="t-fun">classify</span>(n)
+  <span class="t-key">if</span> n <span class="t-op">&lt;</span> <span class="t-num">0</span> <span class="t-key">then return</span> <span class="t-str">"negative"</span>
+  <span class="t-key">if</span> n <span class="t-key">is</span> <span class="t-num">0</span> <span class="t-key">then return</span> <span class="t-str">"zero"</span>
+  <span class="t-key">return</span> <span class="t-str">"positive"</span>
+<span class="t-key">end</span>
+
+<span class="t-com"># as many values as you like</span>
+<span class="t-key">fun</span> <span class="t-fun">total</span>(<span class="t-op">...</span>numbers) <span class="t-op">-&gt;</span> <span class="t-fun">sum</span>(numbers)
+
+<span class="t-com"># name your arguments when it reads better</span>
+<span class="t-key">say</span> <span class="t-fun">rectangle</span>(width: <span class="t-num">4</span>, height: <span class="t-num">3</span>)
+
+<span class="t-com"># functions are values, and they close over what they see</span>
+<span class="t-key">let</span> double <span class="t-op">=</span> <span class="t-key">fun</span>(n) <span class="t-op">-&gt;</span> n <span class="t-op">*</span> <span class="t-num">2</span>
+
+<span class="t-com"># gradual types — optional, checked when present</span>
+<span class="t-key">fun</span> <span class="t-fun">area</span>(w: <span class="t-type">number</span>, h: <span class="t-type">number</span>): <span class="t-type">number</span> <span class="t-op">-&gt;</span> w <span class="t-op">*</span> h</code></pre>
+      </div>
+
+      <div class="tab-panel" id="t-types" hidden>
+<pre><code><span class="t-key">type</span> <span class="t-type">Point</span> <span class="t-key">has</span> x, y
+  <span class="t-str">"A place on a flat grid."</span>
+
+  <span class="t-key">fun</span> <span class="t-fun">length</span>(self) <span class="t-op">-&gt;</span> math.<span class="t-fun">sqrt</span>(self.x <span class="t-op">^</span> <span class="t-num">2</span> <span class="t-op">+</span> self.y <span class="t-op">^</span> <span class="t-num">2</span>)
+  <span class="t-key">fun</span> <span class="t-fun">plus</span>(self, other) <span class="t-op">-&gt;</span> <span class="t-type">Point</span>(self.x <span class="t-op">+</span> other.x, self.y <span class="t-op">+</span> other.y)
+  <span class="t-key">fun</span> <span class="t-fun">to_text</span>(self) <span class="t-op">-&gt;</span> <span class="t-str">"({self.x}, {self.y})"</span>
+<span class="t-key">end</span>
+
+<span class="t-key">say</span> <span class="t-type">Point</span>(<span class="t-num">3</span>, <span class="t-num">4</span>).<span class="t-fun">length</span>()          <span class="t-out">→ 5</span>
+
+<span class="t-com"># fields can declare a kind and a default</span>
+<span class="t-key">type</span> <span class="t-type">Account</span> <span class="t-key">has</span> owner: <span class="t-type">text</span>, balance: <span class="t-type">number</span> <span class="t-op">=</span> <span class="t-num">0</span>
+  <span class="t-key">fun</span> <span class="t-fun">deposit</span>(self, amount)
+    <span class="t-key">if</span> amount <span class="t-op">&lt;=</span> <span class="t-num">0</span> <span class="t-key">then throw</span> <span class="t-str">"a deposit has to be positive"</span>
+    self.balance <span class="t-op">+=</span> amount
+    <span class="t-key">return</span> self.balance
+  <span class="t-key">end</span>
+<span class="t-key">end</span>
+
+<span class="t-com"># one type can build on another</span>
+<span class="t-key">type</span> <span class="t-type">Dog</span> <span class="t-key">from</span> <span class="t-type">Animal</span>
+  <span class="t-key">fun</span> <span class="t-fun">speak</span>(self) <span class="t-op">-&gt;</span> <span class="t-str">"woof"</span>
+<span class="t-key">end</span></code></pre>
+      </div>
+
+      <div class="tab-panel" id="t-match" hidden>
+<pre><code><span class="t-key">match</span> value
+  <span class="t-key">case</span> <span class="t-num">0</span>                    <span class="t-op">-&gt;</span> <span class="t-str">"nothing at all"</span>
+  <span class="t-key">case</span> <span class="t-num">1</span> <span class="t-op">|</span> <span class="t-num">2</span> <span class="t-op">|</span> <span class="t-num">3</span>            <span class="t-op">-&gt;</span> <span class="t-str">"a small number"</span>
+  <span class="t-key">case</span> <span class="t-type">number</span>(n) <span class="t-key">if</span> n <span class="t-op">&lt;</span> <span class="t-num">0</span>    <span class="t-op">-&gt;</span> <span class="t-str">"below zero"</span>
+  <span class="t-key">case</span> <span class="t-num">4</span><span class="t-op">..</span><span class="t-num">99</span>                <span class="t-op">-&gt;</span> <span class="t-str">"a middling number"</span>
+  <span class="t-key">case</span> []                   <span class="t-op">-&gt;</span> <span class="t-str">"an empty list"</span>
+  <span class="t-key">case</span> [only]               <span class="t-op">-&gt;</span> <span class="t-str">"just {only}"</span>
+  <span class="t-key">case</span> [first, <span class="t-op">...</span>rest]     <span class="t-op">-&gt;</span> <span class="t-str">"{first}, {rest.length} more"</span>
+  <span class="t-key">case</span> {name: n}            <span class="t-op">-&gt;</span> <span class="t-str">"something called {n}"</span>
+  <span class="t-key">case</span> <span class="t-type">Point</span>(<span class="t-num">0</span>, <span class="t-num">0</span>)          <span class="t-op">-&gt;</span> <span class="t-str">"the origin"</span>
+  <span class="t-key">case</span> <span class="t-type">Point</span>(x, y)          <span class="t-op">-&gt;</span> <span class="t-str">"the point {x},{y}"</span>
+  <span class="t-key">case</span> <span class="t-type">text</span>(t)             <span class="t-op">-&gt;</span> <span class="t-str">"some words: {t}"</span>
+  <span class="t-key">case</span> _                    <span class="t-op">-&gt;</span> <span class="t-str">"something else"</span>
+<span class="t-key">end</span>
+
+<span class="t-com"># forget a case and SHE tells you which value was not handled</span></code></pre>
+      </div>
+
+      <div class="tab-panel" id="t-errors" hidden>
+<pre><code><span class="t-key">try</span>
+  <span class="t-key">let</span> answer <span class="t-op">=</span> <span class="t-num">1</span> <span class="t-op">/</span> <span class="t-num">0</span>
+<span class="t-key">catch</span> e: <span class="t-type">MathError</span>
+  <span class="t-key">say</span> <span class="t-str">"a maths problem: {e.message}"</span>
+<span class="t-key">catch</span> e: <span class="t-type">IndexError</span> <span class="t-op">|</span> <span class="t-type">KeyError</span>
+  <span class="t-key">say</span> <span class="t-str">"looked for something that was not there"</span>
+<span class="t-key">catch</span> e
+  <span class="t-key">say</span> <span class="t-str">"anything else: {e.kind}"</span>
+<span class="t-key">finally</span>
+  <span class="t-key">say</span> <span class="t-str">"cleaned up either way"</span>
+<span class="t-key">end</span>
+
+<span class="t-com"># throw text, or a kind you name yourself</span>
+<span class="t-key">throw</span> <span class="t-str">"the amount has to be positive"</span>
+<span class="t-key">throw</span> <span class="t-fun">error</span>(<span class="t-str">"NotEnough"</span>, <span class="t-str">"you only have {balance}"</span>)
+
+<span class="t-com"># state your assumptions up front</span>
+<span class="t-key">assert</span> numbers.length <span class="t-op">&gt;</span> <span class="t-num">0</span>, <span class="t-str">"average needs a number"</span></code></pre>
+      </div>
+
+      <div class="tab-panel" id="t-async" hidden>
+<pre><code><span class="t-com"># an async function runs on its own thread</span>
+<span class="t-key">async fun</span> <span class="t-fun">fetch_price</span>(symbol)
+  <span class="t-key">return</span> http.<span class="t-fun">json</span>(<span class="t-str">"https://api.example.com/{symbol}"</span>).price
+<span class="t-key">end</span>
+
+<span class="t-com"># calling it hands back a task, straight away</span>
+<span class="t-key">let</span> tasks <span class="t-op">=</span> [<span class="t-str">"AAPL"</span>, <span class="t-str">"MSFT"</span>, <span class="t-str">"GOOG"</span>] <span class="t-op">|&gt;</span> <span class="t-fun">map</span>(fetch_price)
+
+<span class="t-com"># await one, or a whole list at once</span>
+<span class="t-key">for each</span> price <span class="t-key">in await</span> tasks
+  <span class="t-key">say</span> price
+<span class="t-key">end</span>
+
+<span class="t-com"># three requests in the time of the slowest, not the sum</span></code></pre>
+      </div>
+
+      <div class="tab-panel" id="t-test" hidden>
+<pre><code><span class="t-com"># tests live next to the code they check</span>
+
+<span class="t-key">fun</span> <span class="t-fun">celsius_to_fahrenheit</span>(c) <span class="t-op">-&gt;</span> c <span class="t-op">*</span> <span class="t-num">9</span> <span class="t-op">/</span> <span class="t-num">5</span> <span class="t-op">+</span> <span class="t-num">32</span>
+
+<span class="t-key">test</span> <span class="t-str">"converts freezing and boiling"</span>
+  <span class="t-key">expect</span> <span class="t-fun">celsius_to_fahrenheit</span>(<span class="t-num">0</span>) <span class="t-key">is</span> <span class="t-num">32</span>
+  <span class="t-key">expect</span> <span class="t-fun">celsius_to_fahrenheit</span>(<span class="t-num">100</span>) <span class="t-key">is</span> <span class="t-num">212</span>
+<span class="t-key">end</span>
+
+<span class="t-key">test</span> <span class="t-str">"dividing by zero is refused"</span>
+  <span class="t-key">try</span>
+    <span class="t-fun">safe_divide</span>(<span class="t-num">1</span>, <span class="t-num">0</span>)
+    <span class="t-key">expect false</span>, <span class="t-str">"it should have thrown"</span>
+  <span class="t-key">catch</span> e
+    <span class="t-key">expect</span> e.kind <span class="t-key">is</span> <span class="t-str">"MathError"</span>
+  <span class="t-key">end</span>
+<span class="t-key">end</span>
+
+<span class="t-com">#  $ she test</span>
+<span class="t-out">#  ok    converts freezing and boiling</span>
+<span class="t-out">#  ok    dividing by zero is refused</span>
+<span class="t-out">#  2 passed, 0 failed, 2 total</span></code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= FEATURES ========================= -->
+<section id="features">
+  <div class="shell">
+    <p class="eyebrow">The whole surface</p>
+    <h2>Nothing you would have to go and find.</h2>
+
+    <table class="feature-table" style="margin-top:28px">
+      <tr><td>values</td><td>numbers, text, booleans, <code>nothing</code>, lists, maps, ranges, functions, your own types</td></tr>
+      <tr><td>text</td><td>interpolation <code>"hi {name}"</code>, triple-quoted blocks, raw <code>r"..."</code>, forty text functions</td></tr>
+      <tr><td>control flow</td><td><code>if</code> / <code>else if</code> / <code>else</code>, <code>while</code>, <code>repeat until</code>, <code>for each</code>, <code>break</code>, <code>skip</code></td></tr>
+      <tr><td>functions</td><td>defaults, named arguments, rest <code>...args</code>, spread, closures, lambdas, recursion</td></tr>
+      <tr><td>types</td><td><code>type X has a, b</code>, methods, inheritance, <code>setup</code> and <code>to_text</code> hooks</td></tr>
+      <tr><td>pattern matching</td><td>literals, ranges, or-patterns, guards, list and map destructuring, type patterns</td></tr>
+      <tr><td>errors</td><td><code>try</code> / <code>catch</code> / <code>finally</code>, <code>throw</code>, catch by kind, <code>assert</code></td></tr>
+      <tr><td>gradual typing</td><td><code>let n: number</code>, parameter and return types, unions — checked at runtime, never required</td></tr>
+      <tr><td>concurrency</td><td><code>async fun</code>, <code>await</code>, awaiting a whole list of tasks</td></tr>
+      <tr><td>modules</td><td><code>import math</code>, <code>from math import sqrt</code>, <code>use "./helpers.she" as helpers</code></td></tr>
+      <tr><td>modern sugar</td><td>pipelines <code>|&gt;</code>, safe navigation <code>?.</code>, defaults <code>??</code>, methods on every value</td></tr>
+      <tr><td>standard library</td><td>text, list, maps, math, json, re, time, random, csv, crypto, fs, http, os, web</td></tr>
+      <tr><td>security</td><td>capability sandbox, step and time budgets, hashing, HMAC, password storage, tokens</td></tr>
+      <tr><td>tooling</td><td>REPL, formatter, test runner, project scaffolder, doc browser, language server</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ========================= ECOSYSTEM ========================= -->
+<section id="ecosystem" style="background:var(--bg-soft);border-block:1px solid var(--line-soft)">
+  <div class="shell">
+    <p class="eyebrow">Built in</p>
+    <h2>Two libraries, first class.</h2>
+    <p class="lede" style="margin-bottom:34px">
+      Not bindings you install and wire up. Ordinary SHE modules, documented alongside the rest.
+    </p>
+
+    <div class="cards two">
+      <div class="card">
+        <div class="card-icon">🕐</div>
+        <h3>crypto — Kaalka</h3>
+        <p style="margin-bottom:14px">Encryption whose key is a moment in time.</p>
+<pre style="padding:16px;background:var(--panel-2);border-radius:10px;font-size:13px"><code><span class="t-key">import</span> crypto
+
+<span class="t-key">let</span> sealed <span class="t-op">=</span> crypto.<span class="t-fun">seal</span>(<span class="t-str">"meet at the bridge"</span>, <span class="t-str">"14:35:22"</span>)
+<span class="t-key">say</span> crypto.<span class="t-fun">open</span>(sealed, <span class="t-str">"14:35:22"</span>)
+
+<span class="t-com"># envelopes carry sender, recipient and a checksum</span>
+<span class="t-key">let</span> packet <span class="t-op">=</span> crypto.<span class="t-fun">envelope</span>(msg, <span class="t-str">"ada"</span>, <span class="t-str">"bob"</span>)
+<span class="t-key">say</span> crypto.<span class="t-fun">open_envelope</span>(packet, <span class="t-str">"bob"</span>)</code></pre>
+        <div class="callout warn" style="margin-top:14px;font-size:13.5px">
+          <b>Said plainly:</b> Kaalka is a novel construction that has not been through
+          public cryptanalysis. Use it for time-keyed handoff, puzzles and teaching. For
+          secrets that matter, the same module gives you <code>hash</code>, <code>hmac</code>,
+          <code>password_hash</code> and <code>token</code> over vetted primitives.
+        </div>
+        <p style="margin-top:14px"><a href="https://github.com/PIYUSH-MISHRA-00/Kaalka-Encryption-Algorithm">Kaalka on GitHub →</a></p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">◈</div>
+        <h3>web — WebWeaveX</h3>
+        <p style="margin-bottom:14px">Turn a live app, a repository or a document into a deterministic graph.</p>
+<pre style="padding:16px;background:var(--panel-2);border-radius:10px;font-size:13px"><code><span class="t-key">import</span> web
+
+<span class="t-key">let</span> graph <span class="t-op">=</span> web.<span class="t-fun">extract</span>(<span class="t-str">"https://example.com"</span>, <span class="t-str">"web"</span>)
+<span class="t-key">say</span> <span class="t-str">"{web.nodes(graph).length} nodes"</span>
+<span class="t-key">say</span> <span class="t-str">"{web.edges(graph).length} connections"</span>
+
+<span class="t-com"># the same input always gives the same identity</span>
+<span class="t-key">say</span> web.<span class="t-fun">fingerprint</span>(graph)</code></pre>
+        <div class="callout" style="margin-top:14px;font-size:13.5px">
+          Because extraction is deterministic, two runs of the same thing produce the same
+          fingerprint — so a diff of two graphs is a diff of what actually changed.
+        </div>
+        <p style="margin-top:14px"><a href="https://github.com/ni-sh-a-char/WebWeaveX">WebWeaveX on GitHub →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= AUDIENCE ========================= -->
+<section id="who">
+  <div class="shell">
+    <p class="eyebrow">Who it is for</p>
+    <h2>One language, four honest answers.</h2>
+
+    <div class="cards four" style="margin-top:30px">
+      <div class="card">
+        <div class="card-icon">◔</div>
+        <h3>Never programmed</h3>
+        <p>The errors are written for you. Nothing you run can damage anything. Start at example one and you are writing real programs the same afternoon.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">◑</div>
+        <h3>Students</h3>
+        <p>Recursion, closures, pattern matching, types, concurrency — every idea you will be taught, with no build system standing in the way.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">◕</div>
+        <h3>Developers</h3>
+        <p>Pipelines, destructuring, gradual types, a formatter, a test runner and an LSP. One <code>pip install</code> and the toolchain is there.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">●</div>
+        <h3>Security &amp; teams</h3>
+        <p>Run untrusted code with a step budget and no authority. Ship scripts whose reach is declared on the command line and enforced by the runtime.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= INSTALL ========================= -->
+<section id="install" style="background:var(--bg-soft);border-block:1px solid var(--line-soft)">
+  <div class="shell split">
+    <div>
+      <p class="eyebrow">Get started</p>
+      <h2>Sixty seconds<br>to your first program.</h2>
+      <p class="lede">
+        No toolchain, no compiler, no configuration file. If you have Python 3.9 or newer,
+        you already have everything SHE needs.
+      </p>
+      <div class="chip-row">
+        <span class="chip">macOS</span><span class="chip">Linux</span>
+        <span class="chip">Windows</span><span class="chip">browser</span>
+      </div>
+      <p style="margin-top:26px">
+        <a class="btn btn-primary" href="docs.html">Read the docs →</a>
+      </p>
+    </div>
+    <div class="terminal">
+<span class="cmd">pip install she-lang</span>
+<span class="dim">Successfully installed she-lang-2.0.0</span>
+
+<span class="cmd">she new my-project</span>
+<span class="ok">created my-project/</span>
+<span class="dim">  cd my-project</span>
+<span class="dim">  she run main.she</span>
+
+<span class="cmd">cd my-project && she run main.she</span>
+Hello, world!
+Hello, my-project!
+the even ones add up to 6
+
+<span class="cmd">she test</span>
+  <span class="ok">ok</span>    greeting says hello
+  <span class="ok">1 passed, 0 failed, 1 total</span>
+
+<span class="cmd">she</span>
+<span class="dim">SHE 2.0.0 — type :help for help</span>
+<span style="color:#C084FC">she&gt;</span> <span class="cmd" style="all:unset">[1,2,3] |> sum()</span>
+6
+</div>
+  </div>
+</section>
+
+<!-- ========================= SUPPORT ========================= -->
+<section id="support">
+  <div class="shell">
+    <div class="coffee-band">
+      <div>
+        <h3>SHE is free, and built in the open.</h3>
+        <p>
+          Apache&nbsp;2.0, no telemetry, no paid tier, no catch. If it saved you time,
+          taught you something, or you just want to see it keep going — a coffee helps
+          more than you would think. Starring the repo costs nothing and helps just as much.
+        </p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-coffee" href="https://buymeacoffee.com/piyushmishra">☕ Buy me a coffee</a>
+        <a class="btn btn-ghost" href="https://github.com/ni-sh-a-char/SHE">★ Star on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="bottom">
+  <div class="shell">
+    <div class="cols">
+      <div>
+        <a class="brand" href="./" style="margin-bottom:12px">
+          <img src="assets/logo.svg" alt=""><span>SHE</span>
+        </a>
+        <p style="max-width:38ch;margin:0">
+          A programming language that reads like English and starts with no permissions at all.
+        </p>
+        <p style="margin-top:16px">
+          <a class="btn btn-coffee" style="padding:8px 16px;font-size:13.5px"
+             href="https://buymeacoffee.com/piyushmishra">☕ Support SHE</a>
+        </p>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <a href="docs.html">Documentation</a>
+        <a href="docs.html#tour">Language tour</a>
+        <a href="#playground">Playground</a>
+        <a href="https://github.com/ni-sh-a-char/SHE/tree/main/examples">Examples</a>
+      </div>
+      <div>
+        <h4>Reference</h4>
+        <a href="docs.html#stdlib">Standard library</a>
+        <a href="docs.html#permissions">Permissions</a>
+        <a href="docs.html#cli">Command line</a>
+        <a href="docs.html#grammar">Grammar</a>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <a href="https://github.com/ni-sh-a-char/SHE">GitHub</a>
+        <a href="https://github.com/ni-sh-a-char/SHE/issues">Issues</a>
+        <a href="https://github.com/ni-sh-a-char/SHE/blob/main/CONTRIBUTING.md">Contributing</a>
+        <a href="https://pypi.org/project/she-lang/">PyPI</a>
+      </div>
+    </div>
+    <div class="base">
+      <span>Apache 2.0</span><span>·</span>
+      <span>Built by <a href="https://github.com/PIYUSH-MISHRA-00" style="display:inline">Piyush Mishra</a></span><span>·</span>
+      <span>Kaalka &amp; WebWeaveX included</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+import { createPlayground } from "./assets/playground.js";
+
+// theme
+const root = document.documentElement;
+const stored = (() => { try { return localStorage.getItem("she:theme"); } catch (_) { return null; } })();
+if (stored) root.dataset.theme = stored;
+else if (window.matchMedia("(prefers-color-scheme: light)").matches) root.dataset.theme = "light";
+document.getElementById("theme").addEventListener("click", () => {
+  root.dataset.theme = root.dataset.theme === "light" ? "dark" : "light";
+  try { localStorage.setItem("she:theme", root.dataset.theme); } catch (_) {}
+});
+
+// copy buttons
+for (const button of document.querySelectorAll("[data-copy]")) {
+  button.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(button.dataset.copy);
+      const was = button.textContent;
+      button.textContent = "copied";
+      setTimeout(() => { button.textContent = was; }, 1500);
+    } catch (_) {}
+  });
+}
+
+// tour tabs
+const tabs = [...document.querySelectorAll(".tab")];
+const names = { "t-basics": "basics.she", "t-fun": "functions.she", "t-types": "types.she",
+                "t-match": "matching.she", "t-errors": "errors.she", "t-async": "async.she",
+                "t-test": "tests.she" };
+for (const tab of tabs) {
+  tab.addEventListener("click", () => {
+    for (const other of tabs) {
+      other.setAttribute("aria-selected", String(other === tab));
+      document.getElementById(other.dataset.tab).hidden = other !== tab;
+    }
+    document.getElementById("tab-name").textContent = names[tab.dataset.tab] || "she";
+  });
+}
+
+createPlayground(document.getElementById("pg"));
+</script>
+</body>
+</html>

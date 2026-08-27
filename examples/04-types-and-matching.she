@@ -1,0 +1,79 @@
+# Your own types, and choosing a branch by the shape of a value.
+
+type Point has x, y
+"A place on a flat grid."
+
+fun length(self) -> math.sqrt(self.x ^ 2 + self.y ^ 2)
+
+fun plus(self, other) -> Point(self.x + other.x, self.y + other.y)
+
+fun to_text(self) -> "({self.x}, {self.y})"
+end
+
+let a = Point(3, 4)
+let b = Point(1, 1)
+
+say a  # (3, 4)  — because `to_text` says so
+say a.length()  # 5
+say a.plus(b)  # (4, 5)
+
+# --- fields can have defaults and declared kinds -------------------------
+type Account has owner: text, balance: number = 0
+fun deposit(self, amount)
+  if amount <= 0 then throw "a deposit has to be positive"
+  self.balance += amount
+  return self.balance
+end
+end
+
+let account = Account("Ada")
+say account.deposit(50)
+
+# --- one type can build on another ---------------------------------------
+type Animal has name
+fun speak(self) -> "..."
+fun introduce(self) -> "{self.name} says {self.speak()}"
+end
+
+type Dog from Animal
+  fun speak(self) -> "woof"
+end
+
+type Cat from Animal
+  fun speak(self) -> "meow"
+end
+
+for each pet in [Dog("Rex"), Cat("Mo")]
+  say pet.introduce()
+end
+
+# --- matching -------------------------------------------------------------
+fun describe(value)
+  return match value
+case 0 -> "nothing at all"
+case 1 | 2 | 3 -> "a small number"
+case number(n) if n < 0 -> "below zero"
+case 4..99 -> "a middling number"
+case [] -> "an empty list"
+case [only] -> "a list holding just {only}"
+case [first, ...rest] -> "a list starting with {first} ({rest.length} more)"
+case {name: n} -> "something called {n}"
+case Point(0, 0) -> "the origin"
+case Point(x, y) -> "the point {x},{y}"
+case text(t) -> "some words: {t}"
+case _ -> "something else entirely"
+end
+end
+
+say describe(0)
+say describe(2)
+say describe(-5)
+say describe(50)
+say describe([])
+say describe([7])
+say describe([1, 2, 3])
+say describe({name: "Ada"})
+say describe(Point(0, 0))
+say describe(Point(2, 9))
+say describe("hello")
+say describe(true)

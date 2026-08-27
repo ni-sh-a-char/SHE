@@ -1,0 +1,20 @@
+# The whole language starts here.
+# Run it:  she run examples/01-hello.she
+
+say "Hello, World!"
+
+# Text can hold values inside {braces}.
+let name = "friend"
+say "Hello, {name}!"
+
+# `let` names something that stays the same.
+# `var` names something that can change.
+let pi = 3.14159
+var count = 0
+count += 1
+
+say "pi is {pi}, count is {count}"
+
+# Ask a question. (Try it: she run examples/01-hello.she)
+# let who = ask "What is your name?"
+# say "Nice to meet you, {who}."

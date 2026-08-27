@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SHE playground</title>
+<meta name="description" content="Write and run SHE in your browser. The real interpreter, compiled to WebAssembly — nothing is sent anywhere.">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  body { display: flex; flex-direction: column; min-height: 100vh; }
+  .pg-page { flex: 1; display: flex; flex-direction: column; padding: 22px 0 34px; }
+  .pg-page .window { flex: 1; display: flex; flex-direction: column; }
+  .pg-page .pg { flex: 1; }
+  .pg-page textarea, .pg-page .pg-console { min-height: 56vh; }
+  .hint-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 2px 0;
+              font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+
+<div class="aurora"><i></i><i></i></div>
+
+<header class="top">
+  <div class="shell">
+    <a class="brand" href="./"><img src="assets/logo.svg" alt=""><span>SHE</span></a>
+    <nav>
+      <a href="./#tour" class="hide-sm">Tour</a>
+      <a href="playground.html" style="color:var(--violet)">Playground</a>
+      <a href="docs.html">Docs</a>
+      <a href="https://github.com/ni-sh-a-char/SHE" class="hide-sm">GitHub</a>
+      <a href="https://buymeacoffee.com/piyushmishra" class="btn btn-coffee hide-sm"
+         style="padding:7px 14px;font-size:13.5px">☕ Support</a>
+      <button class="icon-btn" id="theme" aria-label="Switch theme">◐</button>
+    </nav>
+  </div>
+</header>
+
+<div class="shell pg-page">
+  <div class="window" id="pg">
+    <div class="pg-toolbar">
+      <button class="pg-run" data-run>▶ Run</button>
+      <select data-sample aria-label="Choose an example"></select>
+      <button data-reset>reset</button>
+      <button data-share>share</button>
+      <label class="chip" style="display:inline-flex;align-items:center;gap:7px;cursor:pointer">
+        <input type="checkbox" data-allow style="accent-color:var(--violet)"> grant permissions
+      </label>
+      <span class="pg-status" data-status>idle</span>
+    </div>
+    <div class="pg">
+      <div class="pg-editor">
+        <textarea data-editor spellcheck="false" aria-label="SHE code editor"></textarea>
+      </div>
+      <div class="pg-output">
+        <pre class="pg-console" data-console><span class="note">Press Run to start. The first run downloads the interpreter — about ten seconds, once.</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="hint-row">
+    <span>Ctrl/Cmd + Enter runs</span>
+    <span>Tab indents</span>
+    <span>share puts the whole program in the link</span>
+    <span>with no permissions granted, files and the network are refused</span>
+    <span style="margin-left:auto"><a href="docs.html">read the docs →</a></span>
+  </div>
+</div>
+
+<script type="module">
+import { createPlayground } from "./assets/playground.js";
+
+const root = document.documentElement;
+const stored = (() => { try { return localStorage.getItem("she:theme"); } catch (_) { return null; } })();
+if (stored) root.dataset.theme = stored;
+else if (window.matchMedia("(prefers-color-scheme: light)").matches) root.dataset.theme = "light";
+document.getElementById("theme").addEventListener("click", () => {
+  root.dataset.theme = root.dataset.theme === "light" ? "dark" : "light";
+  try { localStorage.setItem("she:theme", root.dataset.theme); } catch (_) {}
+});
+
+createPlayground(document.getElementById("pg"));
+</script>
+</body>
+</html>

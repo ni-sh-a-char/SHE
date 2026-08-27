@@ -1,0 +1,46 @@
+# SHE programs start with no power at all.
+#
+# Run this with no flags and every guarded step is refused, with a message
+# naming the exact flag that would allow it:
+#
+#     she run examples/06-permissions.she
+#
+# Then grant only what you actually want:
+#
+#     she run examples/06-permissions.she --allow-read=. --allow-net=api.github.com
+#
+# Working out sums, sorting lists and calling your own functions never needs
+# permission. Only reaching outside the program does.
+
+import fs
+import http
+import os
+
+say "Doing sums needs no permission at all:"
+say "  {[1, 2, 3, 4, 5] |> filter(fun(n) -> n % 2 is 1) |> sum()}"
+
+fun attempt(what, action)
+  try
+    let result = action()
+    say "  allowed: {what} -> {result}"
+  catch e: PermissionError
+    say "  refused: {what}"
+    say "           {e.message}"
+  catch e
+    say "  failed:  {what} -> {e.message}"
+  end
+end
+
+say ""
+say "Reaching outside is a decision you make on purpose:"
+
+attempt("read a file", fun() -> fs.read("README.md").length)
+attempt("list this folder", fun() -> fs.list(".").length)
+attempt("write a file", fun() -> fs.write("/tmp/she-demo.txt", "hello"))
+attempt("read an environment variable", fun() -> os.env("PATH", "unset").length)
+attempt("start another program", fun() -> os.run("echo", ["hi"]).output)
+attempt("fetch a web page", fun() -> http.get("https://example.com").status)
+
+say ""
+say "The point: you can hand a SHE script to someone and know, from the"
+say "command line alone, exactly what it is able to touch."

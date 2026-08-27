@@ -1,0 +1,83 @@
+# A small tool you would actually run.
+#
+#   she run examples/09-real-world.she --allow-read=.
+#
+# It reads this folder, works out what is in it, and prints a report.
+
+import fs
+
+type Report has folder, files, total_bytes
+fun largest(self) -> self.files |> list.sort(by: fun(f) -> f.size, descending: true)
+
+fun by_kind(self) -> self.files |> list.group_by(fun(f) -> f.kind)
+
+fun to_text(self) ->
+"{self.files.length} files in {self.folder}, {self.total_bytes} bytes"
+end
+
+fun kind_of(name)
+  let ending = fs.extension(name).lower()
+  return match ending
+case ".she" -> "SHE"
+case ".py" -> "Python"
+case ".md" -> "documentation"
+case ".html" | ".css" | ".js" -> "web"
+case ".toml" | ".json" | ".yml" | ".yaml" -> "configuration"
+case "" -> "no extension"
+case _ -> ending
+end
+end
+
+fun scan(folder)
+  var files = []
+  var total = 0
+  for each name in fs.list(folder)
+    let path = fs.join(folder, name)
+    if not fs.file?(path) then skip
+    let size = fs.size(path)
+    total += size
+    files.push({name: name, size: size, kind: kind_of(name)})
+  end
+  return Report(folder, files, total)
+end
+
+fun bar(value, most, width = 24)
+  if most is 0 then return ""
+  return "#".repeat(math.ceil(value / most * width))
+end
+
+# --- the report ----------------------------------------------------------
+let report = scan(".")
+
+say report
+say ""
+
+say "largest files"
+for each file in report.largest() |> list.take(5)
+  say "  {file.name.pad_end(28)} {to_text(file.size).pad_start(8)}  {bar(file.size, report.largest()[0].size)}"
+end
+
+say ""
+say "by kind"
+let groups = report.by_kind()
+let biggest = groups.values() |> map(fun(g) -> g.length) |> max()
+for each kind, group in groups
+  say "  {kind.pad_end(16)} {to_text(group.length).pad_start(3)}  {bar(group.length, biggest)}"
+end
+
+say ""
+say "totals"
+say "  files            {report.files.length}"
+say "  bytes            {report.total_bytes}"
+say "  average size     {math.round(report.total_bytes / report.files.length)}"
+
+test "kind_of recognises SHE files"
+  expect kind_of("main.she") is "SHE"
+  expect kind_of("notes.md") is "documentation"
+  expect kind_of("LICENCE") is "no extension"
+end
+
+test "bar scales to the largest value"
+  expect bar(10, 10, 4) is "####"
+  expect bar(0, 10, 4) is ""
+end

@@ -1,0 +1,73 @@
+# When things go wrong.
+
+# --- catching -----------------------------------------------------------
+try
+  let answer = 1 / 0
+  say answer
+catch e
+  say "that did not work: {e.message}"
+end
+
+# --- throwing your own --------------------------------------------------
+fun withdraw(balance, amount)
+  if amount <= 0 then throw "the amount has to be positive"
+  if amount > balance then throw error("NotEnough", "you only have {balance}")
+  return balance - amount
+end
+
+try
+  say withdraw(100, 30)
+  say withdraw(100, 500)
+catch e
+  say "{e.kind}: {e.message}"
+end
+
+# --- catching only some kinds -------------------------------------------
+fun risky(mode)
+  if mode is "math" then return 1 / 0
+  if mode is "missing" then return [1, 2][99]
+  throw error("Custom", "something else")
+end
+
+for each mode in ["math", "missing", "other"]
+  try
+    risky(mode)
+  catch e: MathError
+    say "{mode} -> a maths problem: {e.message}"
+  catch e: IndexError
+    say "{mode} -> looked past the end: {e.message}"
+  catch e
+    say "{mode} -> anything else: {e.kind}"
+  end
+end
+
+# --- cleaning up whatever happens ---------------------------------------
+fun with_cleanup(should_fail)
+  try
+    if should_fail then throw "failing on purpose"
+    say "  the work happened"
+  catch e
+    say "  caught: {e.message}"
+  finally
+    say "  cleaned up"
+  end
+end
+
+say "working:"
+with_cleanup(false)
+say "failing:"
+with_cleanup(true)
+
+# --- checking your assumptions ------------------------------------------
+fun average(numbers)
+  assert numbers.length > 0, "average needs at least one number"
+  return numbers.sum() / numbers.length
+end
+
+say average([2, 4, 6])
+
+try
+  say average([])
+catch e
+  say "stopped early: {e.message}"
+end

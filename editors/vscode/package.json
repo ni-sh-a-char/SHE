@@ -1,0 +1,77 @@
+{
+  "name": "she-lang",
+  "displayName": "SHE",
+  "description": "Syntax highlighting, snippets and live diagnostics for the SHE programming language.",
+  "version": "2.0.0",
+  "publisher": "she-lang",
+  "license": "Apache-2.0",
+  "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ni-sh-a-char/SHE"
+  },
+  "engines": { "vscode": "^1.75.0" },
+  "categories": ["Programming Languages", "Snippets", "Formatters"],
+  "keywords": ["she", "she-lang", "beginner", "scripting"],
+  "activationEvents": ["onLanguage:she"],
+  "main": "./extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "she",
+        "aliases": ["SHE", "she"],
+        "extensions": [".she"],
+        "configuration": "./language-configuration.json",
+        "icon": { "light": "./icon.png", "dark": "./icon.png" }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "she",
+        "scopeName": "source.she",
+        "path": "./syntaxes/she.tmLanguage.json"
+      }
+    ],
+    "snippets": [{ "language": "she", "path": "./snippets.json" }],
+    "configuration": {
+      "title": "SHE",
+      "properties": {
+        "she.command": {
+          "type": "string",
+          "default": "she",
+          "description": "How to run SHE. Change this if `she` is not on your PATH."
+        },
+        "she.languageServer": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show live diagnostics, completion and hover from `she lsp`."
+        }
+      }
+    },
+    "commands": [
+      { "command": "she.run", "title": "SHE: Run this file", "icon": "$(play)" },
+      { "command": "she.test", "title": "SHE: Run tests" },
+      { "command": "she.format", "title": "SHE: Format this file" },
+      { "command": "she.repl", "title": "SHE: Open the prompt" }
+    ],
+    "menus": {
+      "editor/title/run": [
+        { "command": "she.run", "when": "resourceLangId == she", "group": "navigation" }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "she.run",
+        "key": "ctrl+f5",
+        "mac": "cmd+f5",
+        "when": "resourceLangId == she"
+      }
+    ]
+  },
+  "scripts": {
+    "package": "npx --yes @vscode/vsce package --no-dependencies"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  }
+}
