@@ -126,6 +126,28 @@ she fmt                      # format code
 
 Nothing to compile, no toolchain to install. If you have Python 3.9+, you have SHE.
 
+> **`she: command not found`?**
+> `python -m she` does the same thing and always works — `python -m she run hello.she`.
+>
+> This happens when pip installs into a per-user folder that isn't on your `PATH`.
+> It is common on Windows and on macOS/Linux with `pip install --user`. To fix it
+> properly, add the folder pip named in its install warning to your `PATH`:
+>
+> ```powershell
+> # Windows PowerShell, then open a new terminal
+> $s = python -c "import sysconfig; print(sysconfig.get_path('scripts','nt_user'))"
+> [Environment]::SetEnvironmentVariable("PATH", "$([Environment]::GetEnvironmentVariable('PATH','User'));$s", "User")
+> ```
+>
+> ```sh
+> # macOS / Linux, then reopen your shell
+> echo 'export PATH="$PATH:'"$(python3 -m site --user-base)"'/bin"' >> ~/.zshrc
+> ```
+>
+> A virtual environment sidesteps it entirely, and is the better habit anyway:
+> `python -m venv .venv` then `.venv\Scripts\activate` (Windows) or
+> `source .venv/bin/activate`.
+
 **Optional extras** — SHE works fully without these:
 
 ```sh

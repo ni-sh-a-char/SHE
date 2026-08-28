@@ -357,3 +357,25 @@ def test_the_version_is_the_same_everywhere():
     assert f'version = "{version}"' in read("pyproject.toml")
     assert f'version = "{version}"' in read("she.toml")
     assert f'"version": "{version}"' in read("editors", "vscode", "package.json")
+
+
+def test_new_suggests_the_invocation_that_actually_works(tmp_path):
+    """Someone whose PATH lacks pip's script folder can only reach SHE through
+    `python -m she`. Telling them to run `she run main.she` next hands them a
+    command that fails, so the next step echoes the form they used."""
+    done = run_cli("new", str(tmp_path / "demo"))
+    assert done.returncode == 0, done.stderr
+    assert "python -m she run main.she" in done.stdout
+
+
+def test_unknown_command_suggests_the_same_form(tmp_path):
+    done = run_cli("wibble")
+    assert done.returncode == 2
+    assert "python -m she --help" in done.stderr
+
+
+def test_python_dash_m_she_is_a_supported_entry_point():
+    """Documented as the fallback when `she` is not on PATH, so it is tested."""
+    done = run_cli("--version")
+    assert done.returncode == 0
+    assert "SHE" in done.stdout

@@ -43,6 +43,7 @@
 
   <h4>Getting started</h4>
   <a href="#install">Install</a>
+  <a href="#command-not-found">If `she` is not found</a>
   <a href="#first">Your first program</a>
   <a href="#cli">The command line</a>
 
@@ -111,6 +112,31 @@ pip install "she-lang[all]"      <span class="t-com"># both</span></code></pre>
   <b>Nothing else is required.</b> The rest of the standard library — text, lists, maps,
   maths, JSON, patterns, time, files, HTTP, hashing — is built on Python's own standard
   library and works out of the box.
+</div>
+
+<h3 id="command-not-found">If <code>she</code> is not recognised</h3>
+<p>
+  If your terminal says <code>she: command not found</code> or
+  <code>'she' is not recognized as the name of a cmdlet</code>, SHE <em>is</em>
+  installed — pip just put it in a folder your shell does not look in. This is
+  common on Windows, and on macOS and Linux after <code>pip install --user</code>.
+</p>
+<p>This always works, with no setup at all:</p>
+<pre><code>python -m she run hello.she
+python -m she new my-project
+python -m she                      <span class="t-com"># the prompt</span></code></pre>
+<p>To fix it properly, add pip's script folder to your <code>PATH</code>, then open a new terminal:</p>
+<pre><code><span class="t-com"># Windows PowerShell</span>
+$s = python -c "import sysconfig; print(sysconfig.get_path('scripts','nt_user'))"
+[Environment]::SetEnvironmentVariable("PATH", "$([Environment]::GetEnvironmentVariable('PATH','User'));$s", "User")
+
+<span class="t-com"># macOS / Linux</span>
+echo 'export PATH="$PATH:'"$(python3 -m site --user-base)"'/bin"' &gt;&gt; ~/.zshrc</code></pre>
+<div class="callout">
+  <b>A virtual environment avoids this entirely</b>, and is a better habit regardless:
+  <code>python -m venv .venv</code>, then <code>.venv\Scripts\activate</code> on Windows
+  or <code>source .venv/bin/activate</code> elsewhere. Install into that and
+  <code>she</code> is on your path for as long as it is active.
 </div>
 </section>
 

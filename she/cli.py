@@ -111,7 +111,21 @@ she run main.she
 ```sh
 she test
 ```
+
+If your terminal does not recognise `she`, use `python -m she` instead —
+it does exactly the same thing. See
+<https://ni-sh-a-char.github.io/SHE/docs.html#command-not-found>.
 """
+
+
+def invocation():
+    """How this user reached SHE — `she` or `python -m she`.
+
+    Someone whose PATH does not include pip's script folder can only reach SHE
+    through `python -m she`, so telling them to run `she run main.she` next hands
+    them a command that fails. Echo back whichever form they used."""
+    argv0 = (sys.argv[0] or "").replace("\\", "/").lower()
+    return "python -m she" if argv0.endswith("__main__.py") else "she"
 
 
 def use_utf8():
@@ -147,7 +161,7 @@ def main(argv=None):
     if first.endswith(".she") or os.path.isfile(first):
         return cmd_run(argv)
     print(f"she: `{first}` is not a command and not a .she file", file=sys.stderr)
-    print("try `she --help`", file=sys.stderr)
+    print(f"try `{invocation()} --help`", file=sys.stderr)
     return 2
 
 
@@ -358,9 +372,10 @@ def cmd_new(args):
     except OSError as exc:
         print(f"she: I could not create the project: {exc}", file=sys.stderr)
         return 1
+    how = invocation()
     print(f"created {name}/")
     print(f"  cd {name}")
-    print("  she run main.she")
+    print(f"  {how} run main.she")
     return 0
 
 
