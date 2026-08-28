@@ -2,7 +2,7 @@
   "name": "she-lang",
   "displayName": "SHE",
   "description": "Syntax highlighting, snippets and live diagnostics for the SHE programming language.",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "publisher": "she-lang",
   "license": "Apache-2.0",
   "icon": "icon.png",

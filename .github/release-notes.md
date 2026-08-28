@@ -1,3 +1,18 @@
+## SHE 2.0.3
+
+Adds a warning when `--allow-run` is granted without naming a program.
+
+Prompted by a question on Reddit: does a child `she` process stay capped by its
+parent's grants? It does not — it parses its own flags and gets whatever it asks
+for. But `she` is incidental, since `os.run("python", ["-c", ...])` reaches just as
+far, so capping children would be theatre. Unscoped `--allow-run` is equivalent to
+`--allow-all`, and now says so.
+
+SECURITY.md and the permissions docs cover the property and point at scoping as the
+mitigation. `tools/check_sandbox.py` pins both halves in CI.
+
+---
+
 ## SHE 2.0.2
 
 Fixes the first command in the install instructions failing on Windows.

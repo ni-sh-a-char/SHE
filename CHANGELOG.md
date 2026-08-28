@@ -2,6 +2,37 @@
 
 All notable changes to SHE. This project follows [semantic versioning](https://semver.org).
 
+## [2.0.3] — 2026-08-28
+
+### Added
+
+- **A warning when `--allow-run` is granted with no program named.** Asked on
+  Reddit whether a child `she` process stays capped by its parent's grants: it
+  does not. It parses its own flags and gets whatever it asks for, so a parent
+  holding `--allow-run` can spawn a child with `--allow-all`.
+
+  `she` is incidental to that — `os.run("python", ["-c", ...])` reaches just as
+  far — so capping children would be theatre rather than a fix. Any capability
+  system that lets a program exec an arbitrary binary has this property.
+  Unscoped `--allow-run` is therefore equivalent to `--allow-all`, and now says
+  so when you use it. `--allow-all` stays quiet, since it already means that.
+
+- SECURITY.md, the permissions reference and the docs site document the property
+  and point at scoping (`--allow-run=git`) as the mitigation, with the caveat
+  that a permitted binary can itself be a launcher.
+
+- `tools/check_sandbox.py` pins both halves in CI: that `--allow-run=git` really
+  refuses another program, and that an unscoped grant really does permit any
+  program. If the second starts failing, SECURITY.md needs rewriting rather than
+  the test.
+
+### Note
+
+The documentation for this shipped a commit before the code did, so for a short
+window the website described a warning that the released version did not print.
+Releasing this closes that gap. Docs should not describe unreleased behaviour,
+least of all in the security pages.
+
 ## [2.0.2] — 2026-08-28
 
 ### Fixed
@@ -160,6 +191,7 @@ Defects carried over from 1.0, each now covered by a test:
 
 The original interpreter, kept on the `v1.0.0` branch for history. Unmaintained.
 
+[2.0.3]: https://github.com/ni-sh-a-char/SHE/releases/tag/v2.0.3
 [2.0.2]: https://github.com/ni-sh-a-char/SHE/releases/tag/v2.0.2
 [2.0.1]: https://github.com/ni-sh-a-char/SHE/releases/tag/v2.0.1
 [2.0.0]: https://github.com/ni-sh-a-char/SHE/releases/tag/v2.0.0
