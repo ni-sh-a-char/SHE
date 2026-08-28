@@ -264,6 +264,15 @@ def test_text_methods_and_module_agree():
     assert go('say text.upper("hi")').strip() == "HI"
 
 
+def test_method_on_wrong_type_suggests_the_right_type():
+    error = fails("say [1, 2].upper()")
+    assert "list has no `upper`" in error.message
+    assert "text function" in (error.hint or "")
+    error = fails('say "hi".sum()')
+    assert "text has no `sum`" in error.message
+    assert "list function" in (error.hint or "")
+
+
 def test_missing_key_suggests():
     error = fails('let m = {name: "x"}\nsay m["nme"]')
     assert "no key" in error.message
