@@ -557,6 +557,13 @@ def test_list_module():
     assert go("say [1,2,3].average()").strip() == "2"
 
 
+def test_list_rotate():
+    assert go("say [1,2,3,4].rotate(1)").strip() == "[2, 3, 4, 1]"
+    assert go("say [1,2,3,4].rotate(-1)").strip() == "[4, 1, 2, 3]"
+    assert go("say [1,2,3].rotate(4)").strip() == "[2, 3, 1]"
+    assert go("say [].rotate(3)").strip() == "[]"
+
+
 def test_list_sort_by():
     source = 'say [{n: 2}, {n: 1}] |> list.sort(by: fun(m) -> m.n) |> to_text()'
     assert "1" in go(source)
