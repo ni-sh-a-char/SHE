@@ -1,3 +1,17 @@
+## SHE 2.0.2
+
+Fixes the first command in the install instructions failing on Windows.
+
+pip installs `she.exe` into a per-user scripts folder that is not on `PATH` by default,
+so `pip install she-lang` followed by `she run hello.she` — exactly what the README and
+website said to do — failed for a lot of people. Nothing was wrong with the install;
+`python -m she` worked all along and was simply undocumented.
+
+The docs now cover the fallback and the `PATH` fix, and `she new` echoes back whichever
+form you used to reach SHE rather than assuming `she` is on your path.
+
+---
+
 ## SHE 2.0.1
 
 A metadata fix on top of 2.0.0. The language, standard library and sandbox are unchanged.

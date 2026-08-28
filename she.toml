@@ -1,6 +1,6 @@
 # SHE project manifest.
 name = "she"
-version = "2.0.1"
+version = "2.0.2"
 entry = "examples/01-hello.she"
 
 # Permissions this project's examples need when run with `she run`.

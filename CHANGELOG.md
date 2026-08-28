@@ -2,6 +2,28 @@
 
 All notable changes to SHE. This project follows [semantic versioning](https://semver.org).
 
+## [2.0.2] — 2026-08-28
+
+### Fixed
+
+- **`she: command not found` after a successful install.** pip puts `she.exe` in
+  a per-user scripts folder that is not on `PATH` by default on Windows, nor
+  after `pip install --user` on macOS and Linux. The install instructions in the
+  README and on the website therefore failed on their very first command for a
+  large share of users. Nothing was wrong with the install — `python -m she`
+  worked throughout — it simply was not documented.
+- The README, the docs site and its sidebar now cover the fallback and the
+  `PATH` fix for both Windows and Unix, plus the virtual-environment approach
+  that avoids the problem entirely.
+- `she new` and the unknown-command error echo back whichever form was used to
+  reach SHE, so a user who can only run `python -m she` is no longer told to run
+  `she run main.she` next.
+
+### Added
+
+- Tests covering all three, including that `python -m she` remains a supported
+  entry point now that the docs point people at it.
+
 ## [2.0.1] — 2026-08-27
 
 A metadata fix. No change to the language, the standard library or the sandbox.
@@ -138,5 +160,6 @@ Defects carried over from 1.0, each now covered by a test:
 
 The original interpreter, kept on the `v1.0.0` branch for history. Unmaintained.
 
+[2.0.2]: https://github.com/ni-sh-a-char/SHE/releases/tag/v2.0.2
 [2.0.1]: https://github.com/ni-sh-a-char/SHE/releases/tag/v2.0.1
 [2.0.0]: https://github.com/ni-sh-a-char/SHE/releases/tag/v2.0.0
