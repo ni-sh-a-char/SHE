@@ -375,7 +375,7 @@ A program starts with no authority at all.
 | `--allow-read[=path]` | Reading files |
 | `--allow-write[=path]` | Writing or deleting files |
 | `--allow-net[=host]` | Network connections |
-| `--allow-run[=program]` | Starting other programs |
+| `--allow-run[=program]` | Starting other programs — **transitive, see below** |
 | `--allow-env[=name]` | Reading environment variables |
 | `--allow-time` | Sleeping |
 | `--allow-all`, `-A` | Everything |
@@ -392,8 +392,15 @@ Scopes resolve paths before checking, so `--allow-read=./data` refuses
 `./data/../../secrets.txt`.
 
 Working things out — arithmetic, text, lists, maps, your own functions and
-types — never needs a permission. See [SECURITY.md](../SECURITY.md) for what the
-sandbox does and does not promise.
+types — never needs a permission.
+
+**`--allow-run` with no program named is equivalent to `--allow-all`.** A program
+that can start any other program can start `python`, `curl`, or another `she`
+with wider flags — and a child `she` builds its own sandbox from its own command
+line, with no inheritance from the parent. Scope it (`--allow-run=git`) or treat
+it as full trust. SHE warns when you grant it unscoped.
+
+See [SECURITY.md](../SECURITY.md) for what the sandbox does and does not promise.
 
 ---
 

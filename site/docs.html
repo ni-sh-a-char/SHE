@@ -65,6 +65,7 @@
 
   <h4>Security</h4>
   <a href="#permissions">Permissions</a>
+  <a href="#allow-run">Why --allow-run differs</a>
   <a href="#limits">Budgets and limits</a>
   <a href="#untrusted">Running untrusted code</a>
 
@@ -528,7 +529,7 @@ count <span class="t-op">+=</span> <span class="t-num">1</span></code></pre>
 <tr><td><code>--allow-read[=path]</code></td><td>Reading files. Narrow it to a folder or a single file.</td></tr>
 <tr><td><code>--allow-write[=path]</code></td><td>Writing or deleting files.</td></tr>
 <tr><td><code>--allow-net[=host]</code></td><td>Network connections. Hosts may use <code>*</code>.</td></tr>
-<tr><td><code>--allow-run[=program]</code></td><td>Starting other programs.</td></tr>
+<tr><td><code>--allow-run[=program]</code></td><td>Starting other programs. <b>Unscoped, this is equivalent to <code>--allow-all</code></b> — see below.</td></tr>
 <tr><td><code>--allow-env[=name]</code></td><td>Reading environment variables.</td></tr>
 <tr><td><code>--allow-time</code></td><td>Sleeping.</td></tr>
 <tr><td><code>--allow-all</code>, <code>-A</code></td><td>Everything. Handy while developing.</td></tr>
@@ -553,6 +554,33 @@ she run report.she --allow-net='*.github.com'</code></pre>
 <div class="callout">
   <b>Working things out is always free.</b> Arithmetic, text, lists, maps, your own
   functions and types never need a permission. Only reaching outside the program does.
+</div>
+
+<h3 id="allow-run">Why <code>--allow-run</code> is different</h3>
+<p>
+  A program that can start any other program can start <code>python</code>,
+  <code>curl</code>, or another <code>she</code> with wider flags. A child
+  <code>she</code> process builds its own sandbox from its own command line —
+  there is no inheritance from the parent and no intersection with its grants.
+</p>
+<pre><code><span class="t-key">import</span> os
+os.<span class="t-fun">run</span>(<span class="t-str">"she"</span>, [<span class="t-str">"run"</span>, <span class="t-str">"child.she"</span>, <span class="t-str">"--allow-all"</span>])
+os.<span class="t-fun">run</span>(<span class="t-str">"python"</span>, [<span class="t-str">"-c"</span>, <span class="t-str">"print(open('secret.txt').read())"</span>])</code></pre>
+<p>
+  Capping <code>she</code> children specifically would be theatre, because the
+  second line reaches just as far without involving <code>she</code> at all. Every
+  capability system that lets a program exec an arbitrary binary has this
+  property.
+</p>
+<p>What helps is scoping, and that does work:</p>
+<pre><code>$ she run x.she --allow-run=git
+<span class="t-err">PermissionError:</span> x.she tried to start other programs (python),
+                 but was not given permission</code></pre>
+<div class="callout warn">
+  <b>Treat unscoped <code>--allow-run</code> as full trust.</b> SHE prints a warning
+  when you grant it without naming a program. Scoping narrows the hole rather than
+  closing it — a permitted binary can itself be a launcher, since <code>git</code>
+  will run arbitrary code through hooks and aliases.
 </div>
 </section>
 

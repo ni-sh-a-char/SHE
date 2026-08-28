@@ -173,12 +173,13 @@ def split_flags(args):
 
 
 def build_sandbox(flags, name="this program"):
+    allow_flags = [f for f in flags if f.startswith("--allow") or f == "-A"]
     try:
-        grants = grants_from_args([f for f in flags
-                                   if f.startswith("--allow") or f == "-A"])
+        grants = grants_from_args(allow_flags)
     except ValueError as exc:
         print(f"she: {exc}", file=sys.stderr)
         raise SystemExit(2)
+    warn_about_run(allow_flags)
     limits = {}
     for flag in flags:
         for key, field in (("--max-steps", "max_steps"), ("--timeout", "timeout"),
@@ -191,6 +192,23 @@ def build_sandbox(flags, name="this program"):
                     raise SystemExit(2)
                 limits[field] = value if field == "timeout" else int(value)
     return Sandbox(grants, name=name, **limits)
+
+
+def warn_about_run(allow_flags):
+    """`--allow-run` with no scope is not one grant among six.
+
+    A program that can start any other program can start `python`, `curl` or
+    another `she` with wider flags, so it can reach anything you could reach.
+    Someone who writes `--allow-run` expecting something narrow deserves to be
+    told. `--allow-all` says the same thing on purpose, so it stays quiet."""
+    if "--allow-run" not in allow_flags:
+        return
+    print(
+        "she: warning: `--allow-run` with no program named lets this program start\n"
+        "     any other program — including `python`, or another `she` with wider\n"
+        "     permissions. That makes it equivalent to `--allow-all`.\n"
+        "     Narrow it where you can: --allow-run=git",
+        file=sys.stderr)
 
 
 def report(error, colour=None):

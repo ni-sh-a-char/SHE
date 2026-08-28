@@ -59,6 +59,28 @@ def main():
         else:
             print(f"  allowed  {label}")
 
+    # Scoping `--allow-run` has to be a real restriction, not decoration. This
+    # is the mitigation SECURITY.md points people at, so it is checked here.
+    from she.sandbox import Grant
+    scoped = Sandbox([Grant("run", ["git"])])
+    probe = 'import os\nsay os.run("python", ["-c", "print(1)"])'
+    _, error = run(probe, "<check>", sandbox=scoped)
+    if error is None or error.kind != "PermissionError":
+        problems.append("SCOPE IGNORED: --allow-run=git allowed a different program")
+    else:
+        print("  refused  a program outside --allow-run=git")
+
+    # And the documented escalation stays documented: an unscoped run grant is
+    # equivalent to full authority, because the child chooses its own flags.
+    # If this ever starts being refused, SECURITY.md needs rewriting, not this.
+    wide = Sandbox([Grant("run")])
+    _, error = run(probe, "<check>", sandbox=wide)
+    if error is not None:
+        problems.append(f"UNEXPECTED: an unscoped run grant was refused ({error.kind}) — "
+                        "SECURITY.md documents this as permitted, so one of them is wrong")
+    else:
+        print("  allowed  any program under an unscoped --allow-run (documented)")
+
     # A runaway loop must be stopped by the step budget rather than hanging.
     _, error = run("while true\n  var x = 1\nend", "<check>",
                    sandbox=Sandbox.locked(max_steps=200_000))

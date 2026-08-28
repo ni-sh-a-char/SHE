@@ -30,6 +30,45 @@ internet. It is **not**:
 If you are running code from people you have concrete reason to distrust, run SHE
 inside a container as well. The two together are much stronger than either alone.
 
+## `--allow-run` is transitive, and that is not fixable
+
+**Granting `--allow-run` without naming a program is equivalent to
+`--allow-all`.** It is not one grant among six.
+
+A program that can start any other program can start `python`, `curl`, `sh`, or
+another `she` with wider flags:
+
+```she
+import os
+os.run("she", ["run", "child.she", "--allow-all"])
+os.run("python", ["-c", "print(open('secret.txt').read())"])
+```
+
+A child `she` process builds its own sandbox from its own command line. There is
+no inheritance from the parent and no intersection with the parent's grants.
+
+Capping `she` children specifically would be theatre, because the second line
+above reaches exactly as far without involving `she` at all. Any capability
+system that lets a program exec an arbitrary binary has this property; Deno's
+`--allow-run` carries the same warning for the same reason.
+
+**What helps is scoping**, and that does work:
+
+```
+$ she run x.she --allow-run=git
+PermissionError: x.she tried to start other programs (python),
+                 but was not given permission
+```
+
+So `--allow-run=git` is a real restriction and bare `--allow-run` is not — with
+the caveat that a permitted binary may itself be a launcher, since `git` will run
+arbitrary code through hooks and aliases. Scoping narrows the hole rather than
+closing it.
+
+SHE prints a warning when `--allow-run` is granted with no program named. Treat
+that flag as "I trust this program completely", and if that is not what you mean,
+name the program.
+
 ## Cryptography
 
 The `crypto` module has two halves and the distinction matters.
