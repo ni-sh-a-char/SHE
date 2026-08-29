@@ -304,6 +304,14 @@ def _list_module():
         """A reversed copy."""
         return list(reversed(_need_list(xs, "reverse")))
 
+    def rotate(xs, n):
+        """Move the first n items to the end. A negative n goes the other way."""
+        items = _need_list(xs, "rotate")
+        if not items:
+            return []
+        n = int(n) % len(items)
+        return items[n:] + items[:n]
+
     def sort(interp, xs, by=None, descending=False):
         """A sorted copy. Pass `by` to sort on a computed value."""
         items = list(_need_list(xs, "sort"))
@@ -468,7 +476,8 @@ def _list_module():
         "remove": remove, "remove_at": remove_at, "clear": clear,
         "index_of": index_of, "contains": contains, "slice": slice_,
         "take": take, "drop": drop, "first": first, "last": last,
-        "reverse": reverse, "sort": sort, "unique": unique, "flatten": flatten,
+        "reverse": reverse, "rotate": rotate, "sort": sort, "unique": unique,
+        "flatten": flatten,
         "chunk": chunk, "group_by": group_by, "find": find,
         "find_index": find_index, "partition": partition, "sum": sum_,
         "average": average, "mean": average, "zip": zip_, "join": join,
