@@ -876,7 +876,7 @@ class Interpreter:
 
     # --- members and indexing ---------------------------------------------
     def get_member(self, obj, name, node):
-        from .stdlib import member_of
+        from .stdlib import member_of, module_for_method
         if isinstance(obj, Module):
             if name in obj.values:
                 return obj.values[name]
@@ -915,8 +915,15 @@ class Interpreter:
             raise TypeErr(f"there is nothing here, so `.{name}` has no meaning",
                           node.pos, node.end,
                           hint="use `?.` to skip safely when a value might be nothing.")
+        hint = did_you_mean(name, member_names(obj))
+        if hint is None:
+            module_name = module_for_method(name)
+            if module_name is not None:
+                value_type = "map" if module_name == "maps" else module_name
+                hint = (f"`{name}` is a {value_type} function; "
+                        f"use it on a {value_type} value.")
         raise NameErr(f"a {type_name(obj)} has no `{name}`", node.pos, node.end,
-                      hint=did_you_mean(name, member_names(obj)))
+                      hint=hint)
 
     def set_member(self, obj, name, value, node):
         if isinstance(obj, Instance):

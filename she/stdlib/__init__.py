@@ -179,6 +179,15 @@ def members_for(obj):
     return names
 
 
+def module_for_method(name):
+    """Return the stdlib module that provides a value method, if any."""
+    tables = method_tables()
+    for module_name, py_type in _TABLE_SOURCES.items():
+        if name in tables.get(py_type, {}):
+            return module_name
+    return None
+
+
 # --- core: available without importing anything -----------------------------
 
 # Modules you can use without importing. They are pure computation, so having
